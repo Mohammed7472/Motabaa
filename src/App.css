@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  width: 100%;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  max-width: 100%;
 }
 
 .App-logo {
@@ -20,7 +25,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: clamp(1rem, calc(0.625rem + 1.5vw), 1.625rem);
   color: white;
 }
 
@@ -34,5 +39,45 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Container responsive widths */
+.container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 100%;
+}
+
+@media (min-width: 576px) {
+  .container-fluid {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container-fluid {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-fluid {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container-fluid {
+    max-width: 1320px;
   }
 }

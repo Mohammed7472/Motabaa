@@ -1,0 +1,24 @@
+.gender-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gender-icon:hover {
+  background-color: #e9ecef;
+}
+
+.gender-icon.selected {
+  background-color: #2e99dc8a;
+  color: white;
+}
+
+.gender-option {
+  text-align: center;
+}

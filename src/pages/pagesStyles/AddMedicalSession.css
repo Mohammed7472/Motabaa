@@ -1,0 +1,103 @@
+.add-session-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.add-session-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 60px;
+  width: 100%;
+}
+
+.add-session-form-container {
+  width: 400px;
+  max-width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-session-form {
+  width: 100%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.prescription-upload-section {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.upload-inside-form {
+  width: 100%;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.add-session-container .input-group {
+  margin-bottom: 16px;
+}
+
+.add-session-container h2 {
+  font-size: 22px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.add-session-container .go-btn {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .add-session-content {
+    padding: 80px 15px 40px;
+  }
+
+  .add-session-form {
+    padding: 25px;
+  }
+
+  .add-session-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-session-content {
+    padding: 70px 10px 30px;
+  }
+
+  .add-session-form {
+    padding: 20px;
+  }
+
+  .add-session-container h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .add-session-container .input-group {
+    margin-bottom: 12px;
+  }
+
+  .prescription-upload-section {
+    margin-top: 15px;
+  }
+
+  .upload-inside-form {
+    margin: 12px 0;
+  }
+}

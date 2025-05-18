@@ -1,0 +1,72 @@
+.upload-prescription-container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.upload-prescription-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2e99dc;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.upload-prescription-button:hover {
+  background-color: #1e7ec0;
+  transform: translateY(-2px);
+}
+
+.upload-prescription-button:active {
+  transform: translateY(1px);
+}
+
+.upload-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.upload-text {
+  font-size: 14px;
+}
+
+.selected-file-name {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .upload-prescription-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .upload-icon {
+    font-size: 14px;
+  }
+
+  .upload-text {
+    font-size: 13px;
+  }
+
+  .selected-file-name {
+    font-size: 12px;
+  }
+}
