@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --primary-blue: #2e99dc;
+  --light-blue: rgba(46, 153, 220, 0.3);
+  --white: #ffffff;
+  --shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  --border-radius: 20px;
+}
+
+.reg-container {
+  background-color: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  width: 500px;
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 30px 25px 30px;
+  text-align: center;
+  position: relative;
+}
+
+.reg-container h1 {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  margin: 0 0 30px;
+  color: #000000;
+}
+
+.reg-container .options {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  padding-bottom: 20px;
+}
+
+.reg-container .options .card {
+  flex: 1;
+  background-color: var(--light-blue);
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: 240px;
+  position: relative;
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+.reg-container .options .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.reg-container .image {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.reg-container .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+}
+
+.reg-container .user-option {
+  width: 100%;
+  height: 40px;
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.reg-container .user-option h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #000000;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .reg-container {
+    padding: 25px 20px 25px;
+  }
+
+  .reg-container .options {
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 15px;
+  }
+
+  .reg-container .options .card {
+    width: 100%;
+    height: 220px;
+    max-width: 170px;
+    margin-bottom: 5px;
+  }
+
+  .reg-container .image {
+    height: 180px;
+  }
+
+  .reg-container .user-option {
+    height: 40px;
+  }
+
+  .reg-container .user-option h3 {
+    font-size: 15px;
+  }
+}

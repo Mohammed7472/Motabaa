@@ -1,0 +1,230 @@
+.department-details-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.department-details-content {
+  padding: 110px 40px 60px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.department-details-header {
+  margin-bottom: 40px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  color: #3a86ff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: #2a75e0;
+}
+
+.back-button i {
+  margin-right: 8px;
+}
+
+.department-details-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.department-description {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+.doctors-section {
+  margin-top: 40px;
+}
+
+.doctors-section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.doctors-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.doctor-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.doctor-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.specialization {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.availability {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.availability i {
+  margin-right: 6px;
+  color: #3a86ff;
+}
+
+.book-appointment-btn {
+  background-color: #3a86ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.book-appointment-btn:hover {
+  background-color: #2a75e0;
+}
+
+.no-doctors {
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+@media (max-width: 992px) {
+  .department-details-content {
+    padding: 90px 30px 50px;
+  }
+
+  .department-details-header h1 {
+    font-size: 28px;
+  }
+
+  .department-description {
+    font-size: 16px;
+  }
+
+  .doctors-section h2 {
+    font-size: 22px;
+  }
+
+  .doctor-card h3 {
+    font-size: 18px;
+  }
+
+  .doctors-list {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .department-details-content {
+    padding: 80px 20px 40px;
+  }
+
+  .department-details-header h1 {
+    font-size: 26px;
+  }
+
+  .department-description {
+    font-size: 15px;
+  }
+
+  .doctors-section h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .doctors-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .doctor-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .department-details-content {
+    padding: 70px 15px 30px;
+  }
+
+  .department-details-header h1 {
+    font-size: 24px;
+  }
+
+  .department-description {
+    font-size: 14px;
+  }
+
+  .doctors-section h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .doctors-list {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-card {
+    padding: 15px;
+  }
+
+  .doctor-card h3 {
+    font-size: 16px;
+  }
+
+  .specialization {
+    font-size: 14px;
+  }
+
+  .availability {
+    font-size: 13px;
+  }
+
+  .book-appointment-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}

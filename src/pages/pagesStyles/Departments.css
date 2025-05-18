@@ -1,0 +1,117 @@
+.departments-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.departments-content {
+  display: flex;
+  flex-direction: column;
+  padding: 110px 40px 60px;
+  width: 100%;
+}
+
+.departments-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.departments-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.departments-header p {
+  font-size: 18px;
+  color: #666;
+}
+
+.departments-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .departments-content {
+    padding: 100px 30px 50px;
+  }
+
+  .departments-header h1 {
+    font-size: 30px;
+  }
+
+  .departments-header p {
+    font-size: 17px;
+  }
+
+  .departments-grid {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 992px) {
+  .departments-content {
+    padding: 90px 25px 40px;
+  }
+
+  .departments-header {
+    margin-bottom: 30px;
+  }
+
+  .departments-header h1 {
+    font-size: 28px;
+  }
+
+  .departments-header p {
+    font-size: 16px;
+  }
+
+  .departments-grid {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .departments-content {
+    padding: 80px 20px 30px;
+  }
+
+  .departments-header h1 {
+    font-size: 26px;
+  }
+
+  .departments-header p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .departments-content {
+    padding: 70px 15px 25px;
+  }
+
+  .departments-header {
+    margin-bottom: 25px;
+  }
+
+  .departments-header h1 {
+    font-size: 24px;
+  }
+
+  .departments-header p {
+    font-size: 14px;
+  }
+
+  .departments-grid {
+    gap: 15px;
+  }
+}

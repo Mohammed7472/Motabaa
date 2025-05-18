@@ -1,0 +1,85 @@
+.session-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.doctor-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.doctor-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e6f0f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-icon i {
+  font-size: 20px;
+  color: #333;
+}
+
+.doctor-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+}
+
+.delete-button:hover {
+  color: #ff3b30;
+}
+
+@media (max-width: 576px) {
+  .session-card {
+    padding: 12px 15px;
+  }
+
+  .doctor-info {
+    gap: 10px;
+  }
+
+  .doctor-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .doctor-icon i {
+    font-size: 18px;
+  }
+
+  .doctor-name {
+    font-size: 14px;
+  }
+
+  .delete-button {
+    font-size: 16px;
+    height: 32px;
+    width: 32px;
+  }
+}

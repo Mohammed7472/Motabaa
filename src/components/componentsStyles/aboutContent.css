@@ -1,0 +1,25 @@
+.about-container {
+  font-family: "Inter", sans-serif;
+  /* height: 100vh; */
+  overflow: hidden;
+  padding-top: 13px;
+}
+.image {
+  width: 600px;
+  height: 600px;
+}
+.about-container img {
+  height: 100%;
+  width: 100%;
+}
+.about-container h1 {
+  font-size: 50px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.about-container p {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.8;
+}

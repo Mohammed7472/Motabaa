@@ -1,0 +1,49 @@
+.register-page {
+  height: 100vh;
+  max-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-page .logo-container {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  margin: 0;
+  z-index: 5;
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+
+.register-page .container {
+  margin-top: 70px;
+  padding-top: 0;
+  z-index: 2;
+}
+
+@media (max-width: 991px) {
+  .register-page .logo-container {
+    top: 10px;
+    left: 10px;
+    transform: scale(0.8);
+  }
+
+  .register-page .container {
+    margin-top: 60px;
+  }
+}
+
+@media (max-width: 767px) {
+  .register-page .logo-container {
+    top: 8px;
+    left: 8px;
+    transform: scale(0.75);
+  }
+
+  .register-page .container {
+    margin-top: 50px;
+  }
+}

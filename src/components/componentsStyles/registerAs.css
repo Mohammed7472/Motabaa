@@ -1,0 +1,39 @@
+.register-as-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+.logo-wrapper {
+  margin: 20px 0 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.registration-methods-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 50px;
+}
+
+@media (max-width: 768px) {
+  .logo-wrapper {
+    margin: 15px 0 5px;
+  }
+
+  .registration-methods-page {
+    padding-top: 10px;
+    padding-bottom: 30px;
+  }
+}

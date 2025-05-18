@@ -1,0 +1,46 @@
+.home {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  max-width: 100vw;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  padding-top: 80px; 
+  overflow-x: hidden;
+}
+
+@media screen and (min-width: 1400px) {
+  .home {
+    max-width: 100%;
+  }
+
+  .home-content {
+    max-width: 100%;
+    margin: 0 auto;
+    padding-top: 90px; 
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .home {
+    overflow-y: auto;
+  }
+
+  .home-content {
+    padding-top: 70px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .home-content {
+    padding: 60px 10px 0;
+  }
+}

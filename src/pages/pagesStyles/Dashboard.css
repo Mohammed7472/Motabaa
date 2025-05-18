@@ -1,0 +1,89 @@
+.dashboard-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 110px 20px 60px;
+  width: 100%;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 40px;
+  justify-content: center;
+  margin: 30px auto;
+  width: 100%;
+  max-width: 850px;
+}
+
+.cards-container > a:last-child {
+  grid-column: 1 / span 2;
+  justify-self: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 1200px) {
+  .cards-container {
+    max-width: 800px;
+    gap: 35px;
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard-content {
+    padding-top: 100px;
+  }
+
+  .cards-container {
+    max-width: 750px;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 830px) {
+  .dashboard-content {
+    padding-top: 90px;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 30px;
+  }
+
+  .cards-container > a:last-child {
+    grid-column: 1;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 80px 15px 40px;
+  }
+
+  .cards-container {
+    max-width: 320px;
+    gap: 25px;
+  }
+}
+
+@media (max-width: 400px) {
+  .dashboard-content {
+    padding: 70px 10px 30px;
+  }
+
+  .cards-container {
+    max-width: 280px;
+    gap: 20px;
+  }
+}

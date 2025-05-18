@@ -1,0 +1,41 @@
+.circle-shape {
+  clip-path: circle(70% at 50% 125%);
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  z-index: -10;
+  background: rgba(46, 153, 220, 0.34);
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  .circle-shape {
+    clip-path: circle(65% at 50% 125%);
+  }
+}
+
+@media (max-width: 768px) {
+  .circle-shape {
+    clip-path: circle(60% at 50% 125%);
+  }
+}
+
+@media (max-width: 576px) {
+  .circle-shape {
+    clip-path: circle(50% at 50% 125%);
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .circle-shape {
+    clip-path: circle(40% at 50% 125%);
+  }
+}
+
+@media (min-width: 1400px) {
+  .circle-shape {
+    clip-path: circle(75% at 50% 125%);
+  }
+}
