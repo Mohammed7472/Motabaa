@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import ArrowButton from "./ArrowButton";
 import "./componentsStyles/SharedFormStyle.css";
 
 function SharedForm({
@@ -154,15 +155,13 @@ function SharedForm({
 
           {renderAfterInputs && renderAfterInputs()}
 
-          {onSubmit ? (
-            <button type="submit" className="go-btn">
-              <i className="bi bi-arrow-right-circle"></i>
-            </button>
-          ) : (
-            <Link className="go-btn" to={nextPath}>
-              <i className="bi bi-arrow-right-circle"></i>
-            </Link>
-          )}
+          <div className="button-container">
+            {onSubmit ? (
+              <ArrowButton type="submit" className="form-submit-btn" />
+            ) : (
+              <ArrowButton to={nextPath} className="form-submit-btn" />
+            )}
+          </div>
         </form>
 
         {createAccountLink && (

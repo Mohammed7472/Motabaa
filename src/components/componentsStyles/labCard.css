@@ -1,0 +1,115 @@
+.lab-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lab-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.lab-card:active {
+  transform: translateY(0);
+}
+
+.lab-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.lab-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background-color: #e6f0f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a86ff;
+}
+
+.lab-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.lab-department {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.department-icon {
+  font-size: 12px;
+  color: #888;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  z-index: 10;
+}
+
+.delete-button:hover {
+  color: #ff3b30;
+}
+
+@media (max-width: 576px) {
+  .lab-card {
+    padding: 12px 15px;
+  }
+
+  .lab-info {
+    gap: 10px;
+  }
+
+  .lab-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .lab-name {
+    font-size: 14px;
+  }
+
+  .lab-department {
+    font-size: 12px;
+  }
+
+  .delete-button {
+    font-size: 16px;
+    height: 32px;
+    width: 32px;
+  }
+}

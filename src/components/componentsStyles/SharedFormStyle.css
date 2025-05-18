@@ -157,6 +157,21 @@
   color: #fff;
 }
 
+/* New styles for arrow button */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.form-submit-btn {
+  color: #2e99dc;
+}
+
+.form-submit-btn:hover {
+  color: #1e78b8;
+}
+
 .social {
   margin-top: 10px;
 }
