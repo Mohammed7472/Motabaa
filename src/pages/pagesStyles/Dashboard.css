@@ -1,3 +1,4 @@
+/* Main container styles */
 .dashboard-container {
   min-height: 100vh;
   width: 100%;
@@ -31,6 +32,7 @@
   margin-top: 10px;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 1200px) {
   .cards-container {
     max-width: 800px;
@@ -38,6 +40,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .dashboard-content {
     padding-top: 100px;
@@ -49,6 +52,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 830px) {
   .dashboard-content {
     padding-top: 90px;
@@ -66,6 +70,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 480px) {
   .dashboard-content {
     padding: 80px 15px 40px;
@@ -77,6 +82,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 400px) {
   .dashboard-content {
     padding: 70px 10px 30px;

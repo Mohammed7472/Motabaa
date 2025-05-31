@@ -1,10 +1,11 @@
+/* Main container styles */
 .patient-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 40px;
   width: 100%;
-  /* background-color: #e6f3ff; */
+  
   border-radius: 0;
   margin: 0;
   position: fixed;
@@ -83,7 +84,8 @@
   display: none;
 }
 
-/* Responsive styles */
+
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .patient-navbar {
     padding: 8px 20px;
@@ -120,6 +122,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .patient-navbar {
     padding: 8px 15px;
@@ -149,6 +152,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .patient-navbar {
     padding: 6px 12px;
@@ -187,6 +191,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 480px) {
   .patient-navbar {
     padding: 5px 10px;
@@ -219,6 +224,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 400px) {
   .patient-info {
     padding: 4px 8px;

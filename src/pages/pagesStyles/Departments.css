@@ -1,3 +1,4 @@
+/* Main container styles */
 .departments-container {
   min-height: 100vh;
   width: 100%;
@@ -40,6 +41,7 @@
   margin: 0 auto;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 1200px) {
   .departments-content {
     padding: 100px 30px 50px;
@@ -58,6 +60,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .departments-content {
     padding: 90px 25px 40px;
@@ -80,6 +83,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .departments-content {
     padding: 80px 20px 30px;
@@ -94,6 +98,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .departments-content {
     padding: 70px 15px 25px;

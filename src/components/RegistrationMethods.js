@@ -27,6 +27,9 @@ function RegistrationMethods() {
             </div>
           </Link>
         </div>
+        <Link to="/login" className="login-link">
+          Already have an account? <span>Login</span>
+        </Link>
       </div>
       <RectangleShape />
     </div>

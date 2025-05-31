@@ -1,0 +1,188 @@
+/* Main container styles */
+.lab-report-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lab-report-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 40px;
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.lab-report-card {
+  background-color: #fff;
+  width: 500px;
+  max-width: 95%;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: auto;
+}
+
+.lab-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(46, 153, 220, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  border: 2px solid rgba(46, 153, 220, 0.3);
+}
+
+.lab-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.lab-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+  text-align: center;
+}
+
+.lab-department {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.department-icon {
+  color: #2e99dc;
+  font-size: 12px;
+}
+
+.test-report-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.test-report-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.back-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.back-button {
+  background-color: rgba(46, 153, 220, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 12px;
+}
+
+/* Hover styles */
+.back-button:hover {
+  transform: scale(1.1);
+  background-color: rgba(46, 153, 220, 0.2);
+}
+
+.back-button:active {
+  transform: scale(0.95);
+}
+
+/* Responsive styles for max width devices */
+@media (max-width: 768px) {
+  .lab-report-content {
+    padding: 70px 15px 30px;
+  }
+
+  .lab-report-card {
+    width: 450px;
+    padding: 15px;
+  }
+
+  .lab-name {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .lab-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .test-report-image {
+    max-height: 350px;
+  }
+
+  .back-button {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+  }
+}
+
+/* Responsive styles for max width devices */
+@media (max-width: 480px) {
+  .lab-report-content {
+    padding: 60px 10px 20px;
+  }
+
+  .lab-report-card {
+    width: 400px;
+    padding: 12px;
+  }
+
+  .lab-name {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .lab-icon {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 8px;
+  }
+
+  .test-report-image {
+    max-height: 300px;
+  }
+
+  .back-button {
+    width: 45px;
+    height: 45px;
+    padding: 8px;
+  }
+}

@@ -1,3 +1,4 @@
+/* Main container styles */
 .prescription-confirmation-container {
   min-height: 100vh;
   background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
@@ -85,6 +86,7 @@
   transition: background-color 0.2s, transform 0.2s;
 }
 
+/* Hover styles */
 .back-button:hover {
   background: #1e7ec0;
   transform: translateY(-2px);
@@ -95,6 +97,7 @@
   font-size: 24px;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 480px) {
   .prescription-confirmation-card {
     padding: 20px;

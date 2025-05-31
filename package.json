@@ -1,13 +1,14 @@
 {
-  "name": "motabaa-app",
+  "name": "Motabaa",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Mohammed7472.github.io/motabaa-app",
+  "homepage": "https://Mohammed7472.github.io/Motabaa",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.12.1",
     "react": "^19.1.0",
@@ -18,12 +19,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +45,9 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.7"
   }
 }

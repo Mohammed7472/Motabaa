@@ -1,3 +1,4 @@
+/* Main container styles */
 .register-as-page {
   min-height: 100vh;
   width: 100%;
@@ -27,6 +28,7 @@
   padding-bottom: 50px;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .logo-wrapper {
     margin: 15px 0 5px;

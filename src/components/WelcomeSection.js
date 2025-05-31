@@ -26,10 +26,7 @@ function WelcomeSection() {
     screenSize.height < 500 && screenSize.width > screenSize.height;
 
   return (
-    <div
-      className="welcome"
-      style={!isLandscapeMobile ? { height: `${screenSize.height}px` } : {}}
-    >
+    <div className="welcome">
       <div className="intro-content mx-auto">
         <div className="img-box">
           <img src={intro} alt="Welcome to our website" />

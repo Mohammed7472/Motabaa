@@ -1,5 +1,5 @@
 /* Main container styles */
-.session-card {
+.lab-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,33 +9,62 @@
   margin-bottom: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.doctor-info {
+/* Hover styles */
+.lab-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.lab-card:active {
+  transform: translateY(0);
+}
+
+.lab-info {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex: 1;
 }
 
-.doctor-icon {
+.lab-icon {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 50%;
   background-color: #e6f0f9;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #3a86ff;
 }
 
-.doctor-icon i {
-  font-size: 20px;
-  color: #333;
+.lab-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.doctor-name {
+.lab-name {
   font-size: 16px;
   font-weight: 600;
   color: #333;
+}
+
+.lab-department {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.department-icon {
+  font-size: 12px;
+  color: #888;
 }
 
 .delete-button {
@@ -50,6 +79,7 @@
   justify-content: center;
   height: 36px;
   width: 36px;
+  z-index: 10;
 }
 
 /* Hover styles */
@@ -59,25 +89,26 @@
 
 /* Responsive styles for max width devices */
 @media (max-width: 576px) {
-  .session-card {
+  .lab-card {
     padding: 12px 15px;
   }
 
-  .doctor-info {
+  .lab-info {
     gap: 10px;
   }
 
-  .doctor-icon {
+  .lab-icon {
     width: 32px;
     height: 32px;
+    min-width: 32px;
   }
 
-  .doctor-icon i {
-    font-size: 18px;
-  }
-
-  .doctor-name {
+  .lab-name {
     font-size: 14px;
+  }
+
+  .lab-department {
+    font-size: 12px;
   }
 
   .delete-button {

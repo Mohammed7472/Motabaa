@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
+/* Main container styles */
 .welcome {
-  height: 100vh;
-  overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   width: 100%;
   max-width: 100%;
+  flex: 1;
 }
 
 .welcome .intro-content {
@@ -20,20 +20,17 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  bottom: clamp(-40px, -4vh, -20px);
   padding: 0 1rem;
-  margin-bottom: 10vh;
-  overflow: hidden;
+  z-index: 1;
 }
 
 .welcome .intro-content .img-box {
-  height: min(500px, 50vh);
+  height: min(450px, 40vh);
   position: relative;
   z-index: 5;
   width: 100%;
   display: flex;
   justify-content: center;
-  overflow: hidden;
 }
 
 .welcome .intro-content img {
@@ -63,10 +60,11 @@
   padding: 0;
 }
 
-/* Responsive styles */
+
+/* Responsive styles for max width devices */
 @media (max-width: 1200px) {
   .welcome .intro-content .img-box {
-    height: min(450px, 45vh);
+    height: min(400px, 38vh);
   }
 
   .welcome .intro-heading {
@@ -74,9 +72,10 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .welcome .intro-content .img-box {
-    height: min(400px, 42vh);
+    height: min(350px, 35vh);
   }
 
   .welcome .intro-heading {
@@ -84,14 +83,14 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .welcome .intro-content {
-    padding-bottom: 30px;
-    margin-bottom: 5vh;
+    padding-bottom: 20px;
   }
 
   .welcome .intro-content .img-box {
-    height: min(350px, 40vh);
+    height: min(300px, 33vh);
   }
 
   .welcome .intro-heading {
@@ -99,19 +98,18 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .welcome {
     justify-content: center;
   }
 
   .welcome .intro-content {
-    padding-bottom: 20px;
-    bottom: 0;
-    margin-bottom: 0;
+    padding-bottom: 10px;
   }
 
   .welcome .intro-content .img-box {
-    height: min(280px, 35vh);
+    height: min(250px, 30vh);
     margin-bottom: 5px;
   }
 
@@ -126,28 +124,24 @@
 }
 
 @media (max-height: 700px) and (min-width: 577px) {
-  .welcome .intro-content {
-    margin-bottom: 10vh;
-  }
-
   .welcome .intro-content .img-box {
-    height: 40vh;
+    height: 30vh;
   }
 
   .welcome .intro-heading {
-    margin-top: -3.5vh;
+    margin-top: -3vh;
   }
 }
 
-/* For very large screens */
+
+/* Responsive styles for min width devices */
 @media (min-width: 1400px) {
   .welcome .intro-content {
     max-width: 1400px;
-    margin-bottom: 15vh;
   }
 
   .welcome .intro-content .img-box {
-    height: min(550px, 45vh);
+    height: min(500px, 42vh);
   }
 
   .welcome .intro-heading {
@@ -155,24 +149,37 @@
   }
 }
 
-/* For landscape orientation on mobile */
+
 @media (max-height: 500px) and (orientation: landscape) {
   .welcome {
-    height: auto;
-    min-height: 100vh;
+    padding: 20px 0;
   }
 
   .welcome .intro-content {
-    padding: 100px 1rem 30px;
-    bottom: 0;
-    margin-bottom: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
   }
 
   .welcome .intro-content .img-box {
-    height: 40vh;
+    height: 35vh;
+    width: 50%;
   }
 
   .welcome .intro-heading {
-    margin-top: 10px;
+    margin-top: 0;
+    width: 45%;
+  }
+}
+
+
+@media (max-height: 500px) {
+  .welcome .intro-content .img-box {
+    height: min(200px, 25vh);
+  }
+
+  .welcome .intro-heading {
+    margin-top: -5px;
   }
 }

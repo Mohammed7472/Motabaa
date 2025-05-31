@@ -8,8 +8,8 @@ const PatientNavbar = ({
   patientName = "Mohamed Hassaballa",
   patientImage,
 }) => {
-  // Default image if none provided
-  const defaultImage = "https://via.placeholder.com/50";
+  const defaultImage =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
   return (
     <div className="patient-navbar">

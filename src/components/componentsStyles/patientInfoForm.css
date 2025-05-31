@@ -1,3 +1,4 @@
+/* Main container styles */
 .gender-icon {
   display: flex;
   align-items: center;
@@ -10,6 +11,7 @@
   transition: all 0.3s ease;
 }
 
+/* Hover styles */
 .gender-icon:hover {
   background-color: #e9ecef;
 }

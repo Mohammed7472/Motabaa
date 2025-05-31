@@ -1,3 +1,4 @@
+/* Main container styles */
 .department-card {
   width: 280px;
   height: 200px;
@@ -19,6 +20,7 @@
   margin: 10px;
 }
 
+/* Hover styles */
 .department-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
@@ -65,7 +67,8 @@
   text-align: center;
 }
 
-/* Responsive adjustments */
+
+/* Responsive styles for max width devices */
 @media (max-width: 1200px) {
   .department-card {
     width: 260px;
@@ -73,6 +76,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .department-card {
     width: 240px;
@@ -96,6 +100,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .department-card {
     width: 220px;
@@ -103,6 +108,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .department-card {
     width: 100%;

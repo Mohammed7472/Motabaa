@@ -14,6 +14,7 @@
 html {
   font-size: 16px;
   width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -27,8 +28,15 @@ body {
   color: var(--text-color);
   overflow-x: hidden;
   width: 100%;
+  height: 100%;
   position: relative;
-  max-width: 100vw;
+  max-width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 code {
@@ -41,18 +49,21 @@ img {
   height: auto;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   html {
     font-size: 15px;
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   html {
     font-size: 14px;
   }
 }
 
+/* Responsive styles for min width devices */
 @media (min-width: 1400px) {
   html {
     font-size: 18px;

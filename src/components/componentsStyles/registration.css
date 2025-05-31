@@ -3,29 +3,89 @@
 :root {
   --primary-blue: #2e99dc;
   --light-blue: rgba(46, 153, 220, 0.3);
+  --secondary-blue: #1a7bbd;
   --white: #ffffff;
+  --light-gray: #f8f9fa;
+  --medium-gray: #e9ecef;
+  --dark-gray: #495057;
   --shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   --border-radius: 20px;
+  --transition: all 0.3s ease;
 }
 
+/* Main container styles */
 .reg-container {
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  width: 500px;
+  width: 550px;
   max-width: 90%;
   margin: 0 auto;
-  padding: 30px 25px 30px;
+  padding: 35px 30px;
   text-align: center;
   position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reg-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  background: var(--light-blue);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.reg-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  background: var(--light-blue);
+  border-radius: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 0;
+  opacity: 0.5;
 }
 
 .reg-container h1 {
   font-family: "Inter", sans-serif;
-  font-weight: 600;
-  font-size: 24px;
-  margin: 0 0 30px;
-  color: #000000;
+  font-weight: 700;
+  font-size: 28px;
+  margin: 0 0 35px;
+  color: var(--dark-gray);
+  position: relative;
+}
+
+.reg-container h1::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary-blue);
+  border-radius: 10px;
 }
 
 .reg-container .options {
@@ -33,30 +93,35 @@
   justify-content: space-between;
   gap: 25px;
   padding-bottom: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .reg-container .options .card {
   flex: 1;
-  background-color: var(--light-blue);
-  border-radius: 12px;
+  background-color: var(--light-gray);
+  border-radius: 16px;
   cursor: pointer;
-  border: none;
+  border: 2px solid transparent;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: var(--transition);
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
   padding: 0;
-  height: 240px;
+  height: 260px;
   position: relative;
-  max-width: 180px;
+  max-width: 200px;
   margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.reg-container .options .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.1);
+.reg-container .options /* Hover styles */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(46, 153, 220, 0.15);
+  border-color: var(--primary-blue);
 }
 
 .reg-container .image {
@@ -64,8 +129,20 @@
   justify-content: center;
   align-items: flex-end;
   width: 100%;
-  height: 200px;
+  height: 220px;
   overflow: hidden;
+  background-color: var(--light-blue);
+  position: relative;
+}
+
+.reg-container .image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to top, rgba(46, 153, 220, 0.2), transparent);
 }
 
 .reg-container .image img {
@@ -73,55 +150,116 @@
   height: 100%;
   object-fit: cover;
   object-position: center 15%;
+  transition: var(--transition);
+}
+
+.reg-container .options .card:hover .image img {
+  transform: scale(1.05);
 }
 
 .reg-container .user-option {
   width: 100%;
-  height: 40px;
+  height: 50px;
   background-color: var(--white);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+  position: relative;
+}
+
+.reg-container .options .card:hover .user-option {
+  background-color: var(--primary-blue);
 }
 
 .reg-container .user-option h3 {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   margin: 0;
-  color: #000000;
+  color: var(--dark-gray);
   text-align: center;
+  transition: var(--transition);
 }
 
+.reg-container .options .card:hover .user-option h3 {
+  color: var(--white);
+}
+
+.reg-container .login-link {
+  margin-top: 20px;
+  display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--dark-gray);
+  text-decoration: none;
+}
+
+.reg-container .login-link span {
+  color: var(--primary-blue);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.reg-container .login-link:hover span {
+  text-decoration: underline;
+  color: var(--secondary-blue);
+}
+
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .reg-container {
-    padding: 25px 20px 25px;
+    padding: 25px 20px;
+  }
+
+  .reg-container h1 {
+    font-size: 24px;
+    margin-bottom: 30px;
   }
 
   .reg-container .options {
     flex-direction: column;
-    gap: 30px;
+    align-items: center;
+    gap: 25px;
     padding-bottom: 15px;
   }
 
   .reg-container .options .card {
     width: 100%;
     height: 220px;
-    max-width: 170px;
-    margin-bottom: 5px;
+    max-width: 190px;
   }
 
   .reg-container .image {
-    height: 180px;
+    height: 170px;
   }
 
   .reg-container .user-option {
-    height: 40px;
+    height: 50px;
   }
 
   .reg-container .user-option h3 {
-    font-size: 15px;
+    font-size: 16px;
+  }
+}
+
+/* Responsive styles for max width devices */
+@media (max-width: 480px) {
+  .reg-container {
+    padding: 20px 15px;
+  }
+
+  .reg-container h1 {
+    font-size: 22px;
+  }
+
+  .reg-container .options .card {
+    max-width: 160px;
+    height: 200px;
+  }
+
+  .reg-container .image {
+    height: 150px;
   }
 }

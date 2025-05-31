@@ -1,3 +1,4 @@
+/* Main container styles */
 .logo-container {
   display: flex;
   flex-direction: column;
@@ -43,6 +44,7 @@
 }
 
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .logo-container {
     padding: 15px;
@@ -65,6 +67,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .logo-container {
     padding: 10px;
@@ -87,6 +90,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .logo-container {
     padding: 8px;

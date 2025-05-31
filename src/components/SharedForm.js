@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import ArrowButton from "./ArrowButton";
 import "./componentsStyles/SharedFormStyle.css";
 
 function SharedForm({
@@ -17,6 +18,7 @@ function SharedForm({
   initialData = {},
   createAccountLink = null,
   renderAfterInputs = null,
+  useResponsiveGrid = false,
 }) {
   const [formData, setFormData] = useState(() => {
     const initialFormData = inputs.reduce((acc, input) => {
@@ -37,11 +39,11 @@ function SharedForm({
     }
   }, [initialData]);
 
-  const handleGenderChange = (gender) => {
-    setGender(gender);
+  const handleGenderChange = (selectedGender) => {
+    setGender(selectedGender);
     setFormData((prev) => ({
       ...prev,
-      gender,
+      gender: selectedGender,
     }));
   };
 
@@ -56,7 +58,7 @@ function SharedForm({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSubmit) {
-      onSubmit({ ...formData, gender });
+      onSubmit(formData);
     }
   };
 
@@ -74,28 +76,81 @@ function SharedForm({
     }
   };
 
+  const renderInput = (input, index) => {
+    if (input.name === "gender" && !input.showAsDropdown) {
+      return (
+        <div className="gender-selection-container" key={index}>
+          <label className="gender-label">Gender</label>
+          <div className="gender-toggle-container">
+            <div
+              className={`gender-toggle-option ${
+                formData.gender === "male" ? "selected" : ""
+              }`}
+              onClick={() => handleGenderChange("male")}
+            >
+              <i className="bi bi-gender-male"></i>
+              <span>Male</span>
+            </div>
+            <div
+              className={`gender-toggle-option ${
+                formData.gender === "female" ? "selected" : ""
+              }`}
+              onClick={() => handleGenderChange("female")}
+            >
+              <i className="bi bi-gender-female"></i>
+              <span>Female</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (input.type === "select") {
+      return (
+        <div className="input-group" key={index}>
+          <span className="icon">
+            <i className={`bi ${input.icon}`}></i>
+          </span>
+          <select
+            name={input.name}
+            value={formData[input.name] || ""}
+            onChange={handleInputChange}
+            required={input.required}
+            className="form-select"
+          >
+            {input.options.map((option, idx) => (
+              <option key={idx} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
+    return (
+      <div className="input-group" key={index}>
+        <span className="icon">
+          <i className={`bi ${input.icon}`}></i>
+        </span>
+        <input
+          type={input.type || "text"}
+          name={input.name}
+          value={formData[input.name] || ""}
+          onChange={handleInputChange}
+          placeholder={input.placeholder}
+          required={input.required}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="container">
       <div className={`card register-card ${formClassName}`}>
         {headerIcon && (
-          <div
-            className="mb-3"
-            style={{
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              backgroundColor: "#2E99DC8A",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: "0 auto",
-              border: "2px solid #2E99DC8A",
-            }}
-          >
-            <i
-              className={`bi ${headerIcon}`}
-              style={{ fontSize: "40px", color: "#fff" }}
-            ></i>
+          <div className="mb-3 form-header-icon">
+            <i className={`bi ${headerIcon}`}></i>
           </div>
         )}
 
@@ -117,21 +172,13 @@ function SharedForm({
         )}
 
         <form onSubmit={handleSubmit}>
-          {inputs.map((input, index) => (
-            <div className="input-group" key={index}>
-              <span className="icon">
-                <i className={`bi ${input.icon}`}></i>
-              </span>
-              <input
-                type={input.type || "text"}
-                name={input.name}
-                value={formData[input.name] || ""}
-                onChange={handleInputChange}
-                placeholder={input.placeholder}
-                required={input.required}
-              />
-            </div>
-          ))}
+          <div
+            className={`form-inputs ${
+              useResponsiveGrid ? "responsive-grid" : ""
+            }`}
+          >
+            {inputs.map((input, index) => renderInput(input, index))}
+          </div>
 
           {showGender && (
             <div className="gender-group">
@@ -154,15 +201,15 @@ function SharedForm({
 
           {renderAfterInputs && renderAfterInputs()}
 
-          {onSubmit ? (
-            <button type="submit" className="go-btn">
-              <i className="bi bi-arrow-right-circle"></i>
-            </button>
-          ) : (
-            <Link className="go-btn" to={nextPath}>
-              <i className="bi bi-arrow-right-circle"></i>
-            </Link>
-          )}
+          <div className="button-container">
+            {onSubmit ? (
+              <button type="submit" className="submit-button">
+                <i className="bi bi-arrow-right-circle-fill"></i>
+              </button>
+            ) : (
+              <ArrowButton to={nextPath} className="form-submit-btn" />
+            )}
+          </div>
         </form>
 
         {createAccountLink && (
@@ -172,8 +219,8 @@ function SharedForm({
         )}
 
         {showSocialLogin && (
-          <>
-            <div>Register with</div>
+          <div className="social-login-section">
+            <div className="social-login-text">Register with</div>
             <div className="social">
               {socialIcons.facebook && (
                 <span className="facebook-icon">
@@ -186,7 +233,7 @@ function SharedForm({
                 </span>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

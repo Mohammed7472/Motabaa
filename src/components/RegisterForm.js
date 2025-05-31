@@ -25,14 +25,14 @@ function RegisterForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Store form data in sessionStorage
+    
     sessionStorage.setItem("registerFormData", JSON.stringify(formData));
 
-    // If patient, navigate to patient info page
+    
     if (option === "patient") {
       navigate(`/register/${option}/info`);
     } else {
-      // If doctor, redirect to dashboard or completion page
+      
       navigate("/dashboard");
     }
   };

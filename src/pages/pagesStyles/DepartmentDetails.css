@@ -1,3 +1,4 @@
+/* Main container styles */
 .department-details-container {
   min-height: 100vh;
   width: 100%;
@@ -28,6 +29,7 @@
   transition: color 0.3s;
 }
 
+/* Hover styles */
 .back-button:hover {
   color: #2a75e0;
 }
@@ -77,6 +79,7 @@
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
+/* Hover styles */
 .doctor-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
@@ -121,6 +124,7 @@
   width: 100%;
 }
 
+/* Hover styles */
 .book-appointment-btn:hover {
   background-color: #2a75e0;
 }
@@ -131,6 +135,7 @@
   font-style: italic;
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 992px) {
   .department-details-content {
     padding: 90px 30px 50px;
@@ -157,6 +162,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 768px) {
   .department-details-content {
     padding: 80px 20px 40px;
@@ -185,6 +191,7 @@
   }
 }
 
+/* Responsive styles for max width devices */
 @media (max-width: 576px) {
   .department-details-content {
     padding: 70px 15px 30px;

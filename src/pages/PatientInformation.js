@@ -8,12 +8,15 @@ import "./pagesStyles/Register.css";
 function PatientInformation() {
   const navigate = useNavigate();
   const [initialData, setInitialData] = useState({});
+  const [registeredData, setRegisteredData] = useState({});
 
   useEffect(() => {
     const registrationData = sessionStorage.getItem("registerFormData");
     if (!registrationData) {
       navigate("/register");
     } else {
+      setRegisteredData(JSON.parse(registrationData));
+
       const patientInfoData = sessionStorage.getItem("patientInfoData");
       if (patientInfoData) {
         setInitialData(JSON.parse(patientInfoData));
@@ -23,27 +26,24 @@ function PatientInformation() {
 
   const formInputs = [
     {
-      icon: "bi-gender-ambiguous",
-      placeholder: "Your Age",
-      name: "age",
-      required: true,
-    },
-    {
       icon: "bi-rulers",
-      placeholder: "Your Height",
+      placeholder: "Your Height (cm)",
       name: "height",
       required: true,
     },
     {
       icon: "bi-speedometer2",
-      placeholder: "Your Weight",
+      placeholder: "Your Weight (kg)",
       name: "weight",
       required: true,
     },
   ];
 
   const handleFormSubmit = (formData) => {
+    
+    const combinedData = { ...registeredData, ...formData };
     sessionStorage.setItem("patientInfoData", JSON.stringify(formData));
+    sessionStorage.setItem("patientFullData", JSON.stringify(combinedData));
     navigate("/healthDetails");
   };
 
@@ -59,13 +59,14 @@ function PatientInformation() {
 
       <div className="container">
         <SharedForm
-          title="More Information"
-          headerIcon="bi-person-video"
+          title="Health Information"
+          headerIcon="bi-heart-pulse-fill"
           inputs={formInputs}
-          showGender={true}
+          showGender={false}
           onSubmit={handleFormSubmit}
           initialData={initialData}
           formClassName="patient-info-form"
+          useResponsiveGrid={true}
         />
       </div>
     </div>

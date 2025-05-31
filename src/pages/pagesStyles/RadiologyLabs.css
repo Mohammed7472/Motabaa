@@ -1,5 +1,5 @@
 /* Main container styles */
-.sessions-container {
+.labs-container {
   min-height: 100vh;
   width: 100%;
   background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
@@ -8,7 +8,7 @@
   overflow-x: hidden;
 }
 
-.sessions-content {
+.labs-content {
   display: flex;
   flex-direction: column;
   padding: 100px 40px 60px;
@@ -17,25 +17,25 @@
   margin: 0 auto;
 }
 
-.sessions-header {
+.labs-header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.sessions-header h1 {
+.labs-header h1 {
   font-size: 28px;
   font-weight: 700;
   color: #333;
 }
 
-.sessions-panel {
+.labs-panel {
   background-color: rgba(176, 216, 248, 0.5);
   border-radius: 15px;
   padding: 25px;
   width: 100%;
 }
 
-.sessions-toolbar {
+.labs-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -65,12 +65,12 @@
   background-color: #2a75e0;
 }
 
-.sessions-list {
+.labs-list {
   display: flex;
   flex-direction: column;
 }
 
-.no-sessions {
+.no-labs {
   text-align: center;
   padding: 30px;
   font-size: 16px;
@@ -80,41 +80,41 @@
 
 /* Responsive styles for max width devices */
 @media (max-width: 992px) {
-  .sessions-content {
+  .labs-content {
     padding: 90px 30px 50px;
   }
 }
 
 /* Responsive styles for max width devices */
 @media (max-width: 768px) {
-  .sessions-content {
+  .labs-content {
     padding: 80px 20px 40px;
   }
 
-  .sessions-header h1 {
+  .labs-header h1 {
     font-size: 26px;
   }
 
-  .sessions-panel {
+  .labs-panel {
     padding: 20px;
   }
 }
 
 /* Responsive styles for max width devices */
 @media (max-width: 576px) {
-  .sessions-content {
+  .labs-content {
     padding: 70px 15px 30px;
   }
 
-  .sessions-header h1 {
+  .labs-header h1 {
     font-size: 24px;
   }
 
-  .sessions-panel {
+  .labs-panel {
     padding: 15px;
   }
 
-  .sessions-toolbar {
+  .labs-toolbar {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;

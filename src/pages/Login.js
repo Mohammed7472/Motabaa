@@ -12,9 +12,10 @@ function Login() {
 
   const loginInputs = [
     {
-      icon: "bi-person-fill",
-      placeholder: "ID Or User Name",
-      name: "username",
+      icon: "bi-envelope-fill",
+      placeholder: "Enter your email",
+      name: "email",
+      type: "email",
       required: true,
     },
     {

@@ -14,6 +14,9 @@ import DepartmentDetails from "./pages/DepartmentDetails";
 import MedicalSessions from "./pages/MedicalSessions";
 import AddMedicalSession from "./pages/AddMedicalSession";
 import PrescriptionConfirmation from "./pages/PrescriptionConfirmation";
+import RadiologyLabs from "./pages/RadiologyLabs";
+import AddRadiologyLab from "./pages/AddRadiologyLab";
+import LabReportDetails from "./pages/LabReportDetails";
 
 function App() {
   return (
@@ -38,6 +41,9 @@ function App() {
           />
           <Route path="/sessions" element={<MedicalSessions />} />
           <Route path="/sessions/add" element={<AddMedicalSession />} />
+          <Route path="/radiology-labs" element={<RadiologyLabs />} />
+          <Route path="/radiology-labs/add" element={<AddRadiologyLab />} />
+          <Route path="/lab-report-details" element={<LabReportDetails />} />
           <Route
             path="/prescription-confirmation"
             element={<PrescriptionConfirmation />}

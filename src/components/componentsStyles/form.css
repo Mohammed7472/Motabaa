@@ -1,3 +1,4 @@
+/* Main container styles */
 .card {
   background: white;
   padding: 20px 40px;
@@ -11,11 +12,13 @@
 .register-card {
   margin: 0 auto;
 }
+/* Responsive styles for max width devices */
 @media (max-width: 991px) {
   .card {
     width: 60%;
   }
 }
+/* Responsive styles for max width devices */
 @media (max-width: 767px) {
   .card {
     width: 90%;
@@ -73,6 +76,7 @@
   align-items: center;
 }
 
+/* Hover styles */
 .go-btn:hover {
   background-color: #1e78b8;
 }

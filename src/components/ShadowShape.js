@@ -9,56 +9,74 @@ export default function ShadowShape({
 }) {
   const [shadowSize, setShadowSize] = useState({ v, h });
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
 
       const vValue = typeof v === "string" ? parseInt(v) : v;
       const hValue = typeof h === "string" ? parseInt(h) : h;
 
-      if (window.innerWidth <= 576) {
-        // Mobile
-        setShadowSize({
-          v: typeof v === "string" ? `${vValue * 0.5}px` : vValue * 0.5,
-          h: typeof h === "string" ? `${hValue * 0.5}px` : hValue * 0.5,
-        });
-      } else if (window.innerWidth <= 768) {
-        // Tablet
-        setShadowSize({
-          v: typeof v === "string" ? `${vValue * 0.7}px` : vValue * 0.7,
-          h: typeof h === "string" ? `${hValue * 0.7}px` : hValue * 0.7,
-        });
+      
+      let scaleFactor = 1;
+
+      if (window.innerWidth <= 576 || window.innerHeight <= 500) {
+        
+        scaleFactor = 0.4;
+      } else if (window.innerWidth <= 768 || window.innerHeight <= 700) {
+        
+        scaleFactor = 0.6;
       } else if (window.innerWidth <= 992) {
-        // Small desktop
-        setShadowSize({
-          v: typeof v === "string" ? `${vValue * 0.85}px` : vValue * 0.85,
-          h: typeof h === "string" ? `${hValue * 0.85}px` : hValue * 0.85,
-        });
+        
+        scaleFactor = 0.8;
       } else if (window.innerWidth >= 1400) {
-        // Large screens
-        setShadowSize({
-          v: typeof v === "string" ? `${vValue * 1.2}px` : vValue * 1.2,
-          h: typeof h === "string" ? `${hValue * 1.2}px` : hValue * 1.2,
-        });
-      } else {
-        // Default (medium desktop)
-        setShadowSize({ v, h });
+        
+        scaleFactor = 1.1;
       }
+
+      setShadowSize({
+        v:
+          typeof v === "string"
+            ? `${vValue * scaleFactor}px`
+            : vValue * scaleFactor,
+        h:
+          typeof h === "string"
+            ? `${hValue * scaleFactor}px`
+            : hValue * scaleFactor,
+      });
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [v, h, windowWidth]);
+  }, [v, h]);
 
-  const topValue =
-    typeof top === "string" && top.includes("%") ? `${parseInt(top)}%` : top;
+  
+  let topValue =
+    typeof top === "string" && top.includes("%") ? top : `${top}px`;
+  let leftValue =
+    typeof left === "string" && left.includes("%") ? left : `${left}px`;
 
-  const leftValue =
-    typeof left === "string" && left.includes("%")
-      ? `${parseInt(left)}%`
-      : left;
+  
+  if (parseInt(topValue) > 85 && topValue.includes("%")) {
+    topValue = "85%";
+  }
+  if (parseInt(leftValue) > 85 && leftValue.includes("%")) {
+    leftValue = "85%";
+  }
+
+  
+  if (windowHeight <= 500) {
+    const vValue = typeof v === "string" ? parseInt(v) : v;
+    const hValue = typeof h === "string" ? parseInt(h) : h;
+
+    setShadowSize({
+      v: typeof v === "string" ? `${vValue * 0.3}px` : vValue * 0.3,
+      h: typeof h === "string" ? `${hValue * 0.3}px` : hValue * 0.3,
+    });
+  }
 
   const shapeStyle = {
     position: "absolute",

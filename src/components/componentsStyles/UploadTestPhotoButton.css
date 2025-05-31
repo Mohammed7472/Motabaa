@@ -1,5 +1,5 @@
 /* Main container styles */
-.upload-prescription-container {
+.upload-test-container {
   margin: 20px 0;
   display: flex;
   flex-direction: column;
@@ -7,7 +7,7 @@
   width: 100%;
 }
 
-.upload-prescription-button {
+.upload-test-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,13 +26,27 @@
 }
 
 /* Hover styles */
-.upload-prescription-button:hover {
+.upload-test-button:hover {
   background-color: #1e7ec0;
   transform: translateY(-2px);
 }
 
-.upload-prescription-button:active {
+.upload-test-button:active {
   transform: translateY(1px);
+}
+
+.required-info {
+  color: #ff3b30;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 8px 15px;
+  background-color: rgba(255, 59, 48, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #ff3b30;
+  width: 100%;
+  max-width: 400px;
 }
 
 .upload-icon {
@@ -56,7 +70,7 @@
 
 /* Responsive styles for max width devices */
 @media (max-width: 480px) {
-  .upload-prescription-button {
+  .upload-test-button {
     padding: 8px 16px;
     font-size: 13px;
   }
@@ -71,5 +85,11 @@
 
   .selected-file-name {
     font-size: 12px;
+  }
+
+  .required-info {
+    font-size: 13px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
   }
 }

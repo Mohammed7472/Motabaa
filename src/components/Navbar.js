@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./componentsStyles/navbar.css";
 
@@ -5,8 +6,41 @@ import Logo from "./Logo";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (window.scrollY > 50) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+
+    setLoaded(true);
+
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const navbarClass = loaded
+    ? `navbar-container ${scrolled ? "scrolled" : "top"}`
+    : "navbar-container top";
+
   return (
-    <div className="navbar-container">
+    <div className={navbarClass} style={{ boxShadow: scrolled ? "" : "none" }}>
       <nav className="navbar navbar-expand-lg w-100">
         <div className="container-fluid">
           <div className="navbar-brand">

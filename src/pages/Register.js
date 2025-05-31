@@ -1,7 +1,6 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Logo from "../components/Logo";
 import RectangleShape from "../components/RectangleShape";
-import ShadowShape from "../components/ShadowShape";
 import SharedForm from "../components/SharedForm";
 import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
@@ -17,11 +16,19 @@ function Register() {
     return savedData ? JSON.parse(savedData) : {};
   });
 
-  const baseInputs = [
+  
+  const commonInputs = [
     {
       icon: "bi-person-fill",
       placeholder: "Full Name",
       name: "fullName",
+      required: true,
+    },
+    {
+      icon: "bi-envelope-fill",
+      placeholder: "Email",
+      name: "email",
+      type: "email",
       required: true,
     },
     {
@@ -31,43 +38,81 @@ function Register() {
       type: "password",
       required: true,
     },
+    {
+      icon: "bi-calendar-fill",
+      placeholder: "Age",
+      name: "age",
+      type: "number",
+      required: true,
+    },
+    {
+      icon: "bi-telephone-fill",
+      placeholder: "Phone Number",
+      name: "phone",
+      required: true,
+    },
+    {
+      icon: "bi-geo-alt-fill",
+      placeholder: "Address",
+      name: "address",
+      required: true,
+    },
+    {
+      icon: "bi-gender-ambiguous",
+      name: "gender",
+      showAsDropdown: false,
+      required: true,
+    },
   ];
 
-  const inputs =
-    option === "doctor"
-      ? [
-          ...baseInputs.slice(0, 1),
-          {
-            icon: "bi-person-add",
-            placeholder: "Your Specialty",
-            name: "specialty",
-            required: true,
-          },
-          ...baseInputs.slice(1),
-        ]
-      : baseInputs;
+  
+  const doctorInputs = [
+    commonInputs[0], 
+    {
+      icon: "bi-person-badge-fill",
+      placeholder: "Your Specialty",
+      name: "specialty",
+      required: true,
+    },
+    ...commonInputs.slice(1), 
+  ];
+
+  const inputs = option === "doctor" ? doctorInputs : commonInputs;
 
   const handleFormSubmit = (formData) => {
+    console.log("Form submitted:", formData);
     sessionStorage.setItem("registerFormData", JSON.stringify(formData));
 
-    if (option === "patient") {
-      navigate(`/register/${option}/info`);
-    } else {
-      navigate("/dashboard");
-    }
+    
+    navigate("/dashboard");
   };
 
   return (
     <div className="register-page">
-      <div className="logo-container">
-        <Logo v={"150px"} h={"150px"} bgColor={"#2E99DC"} />
+      <div className="floating-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
       </div>
 
-      <ShadowShape left="99%" top="25%" v="160px" />
+      <div className="logo-container">
+        <Link to="/">
+          <Logo v={"150px"} h={"150px"} bgColor={"#2E99DC"} />
+        </Link>
+      </div>
+
+      <div className="register-header">
+        <h1 className="register-title">
+          {option === "doctor" ? "Doctor Registration" : "Patient Registration"}
+        </h1>
+        <p className="register-subtitle">
+          Create your account to join our healthcare platform
+        </p>
+      </div>
 
       <div className="container">
         <SharedForm
-          title={`${option === "doctor" ? "Doctor" : "Patient"} Register`}
+          title={`Create Account`}
           headerIcon="bi-person-badge"
           inputs={inputs}
           showProfileUpload={true}
@@ -75,7 +120,18 @@ function Register() {
           socialIcons={{ facebook, google: gmail }}
           onSubmit={handleFormSubmit}
           initialData={initialData}
+          useResponsiveGrid={true}
+          createAccountLink={{
+            url: "/login",
+            text: "Already have an account? Login",
+          }}
         />
+      </div>
+
+      <div className="back-link">
+        <Link to="/register-as">
+          <i className="bi bi-arrow-left"></i> Back
+        </Link>
       </div>
 
       <RectangleShape />

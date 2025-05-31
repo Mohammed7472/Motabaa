@@ -1,0 +1,37 @@
+/* Main container styles */
+.arrow-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.3s;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 36px;
+  color: #2e99dc;
+  margin: 0 auto;
+}
+
+/* Hover styles */
+.arrow-button:hover {
+  transform: scale(1.1);
+  color: #1e78b8;
+}
+
+.arrow-button:active {
+  transform: scale(0.98);
+}
+
+
+.go-btn {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
