@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Motabaa/static/css/main.ba814c6a.css",
-    "main.js": "/Motabaa/static/js/main.b35bce5b.js",
-    "static/js/453.28f9a303.chunk.js": "/Motabaa/static/js/453.28f9a303.chunk.js",
+    "main.js": "/Motabaa/static/js/main.7d0d11ae.js",
+    "static/js/453.4b724dbf.chunk.js": "/Motabaa/static/js/453.4b724dbf.chunk.js",
     "static/media/home-intro.png": "/Motabaa/static/media/home-intro.edfdac3c274c189d0833.png",
     "static/media/Patient 1.png": "/Motabaa/static/media/Patient 1.90c9115482815e66e4e9.png",
     "static/media/Doctor 1.png": "/Motabaa/static/media/Doctor 1.7ad87e4c6badeed9d8ba.png",
@@ -13,11 +13,11 @@
     "static/media/Mask group.png": "/Motabaa/static/media/Mask group.97882f4c67707fdddea0.png",
     "index.html": "/Motabaa/index.html",
     "main.ba814c6a.css.map": "/Motabaa/static/css/main.ba814c6a.css.map",
-    "main.b35bce5b.js.map": "/Motabaa/static/js/main.b35bce5b.js.map",
-    "453.28f9a303.chunk.js.map": "/Motabaa/static/js/453.28f9a303.chunk.js.map"
+    "main.7d0d11ae.js.map": "/Motabaa/static/js/main.7d0d11ae.js.map",
+    "453.4b724dbf.chunk.js.map": "/Motabaa/static/js/453.4b724dbf.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ba814c6a.css",
-    "static/js/main.b35bce5b.js"
+    "static/js/main.7d0d11ae.js"
   ]
 }
