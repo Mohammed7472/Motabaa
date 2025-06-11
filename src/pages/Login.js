@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
 import { useState } from "react";
+import api from '../services/api';
 
 function Login() {
   const navigate = useNavigate();
@@ -52,53 +53,26 @@ function Login() {
       
       console.log("Login request data:", requestData);
       
-      // Make the API request
-      const response = await fetch("/api/Account/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+      // Use the API client
+      const data = await api.auth.login(requestData);
       
-      // Handle the response
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful:", data);
-        
-        // Store authentication token
-        if (data.token) {
-          localStorage.setItem("authToken", data.token);
-        }
-        
-        // Store user data if needed
-        if (data.user) {
-          localStorage.setItem("userData", JSON.stringify(data.user));
-        }
-        
-        // Navigate to dashboard
-        navigate("/dashboard");
-      } else {
-        // Handle error responses
-        const errorData = await response.json();
-        console.error("Login failed:", errorData);
-        
-        // Display appropriate error message
-        if (errorData.errors) {
-          // Join all error messages
-          const errorMessage = Object.entries(errorData.errors)
-            .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
-            .join('\n');
-          setError(errorMessage);
-        } else if (errorData.message) {
-          setError(errorData.message);
-        } else {
-          setError("Login failed. Please check your credentials and try again.");
-        }
+      console.log("Login successful:", data);
+      
+      // Store authentication token
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
       }
+      
+      // Store user data if needed
+      if (data.user) {
+        localStorage.setItem("userData", JSON.stringify(data.user));
+      }
+      
+      // Navigate to dashboard
+      navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError("An error occurred during login. Please try again.");
+      setError(err.message || "An error occurred during login. Please try again.");
     } finally {
       setIsLoading(false);
     }

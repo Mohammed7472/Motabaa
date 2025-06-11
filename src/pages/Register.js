@@ -6,6 +6,7 @@ import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
 import { useState } from "react";
 import "./pagesStyles/Register.css";
+import api from '../services/api';
 
 // Define the base API URL
 const baseApiUrl = "http://motab3aa.runasp.net/api"; // Replace with your actual API URL
@@ -94,7 +95,7 @@ function Register() {
       
       // Prepare the request data
       const requestData = {
-        userName: formData.email, // Using email as username
+        userName: formData.email,
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
@@ -110,12 +111,17 @@ function Register() {
       }
       
       // Determine which API endpoint to use
-      const apiUrl = option === "doctor" 
+      const apiEndpoint = option === "doctor" 
         ? "/api/Account/DoctorRegister"
         : "/api/Account/PatientRegister";
       
-      // Make the API request with CORS handling
-      const response = await fetch(apiUrl, {
+      // Use absolute URL based on environment
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'http://motab3aa.runasp.net' 
+        : '';
+      
+      // Make the API request with the correct base URL
+      const response = await fetch(`${baseUrl}${apiEndpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +149,7 @@ function Register() {
       }
     } catch (err) {
       console.error("Registration error:", err);
-      setError("An error occurred during registration. Please try again.");
+      setError(err.message || "An error occurred during registration. Please try again.");
     } finally {
       setIsLoading(false);
     }
