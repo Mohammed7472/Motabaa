@@ -7,9 +7,14 @@ import gmail from "../images/gmail.png";
 import { useState } from "react";
 import "./pagesStyles/Register.css";
 
+// Define the base API URL
+const baseApiUrl = "http://motab3aa.runasp.net/api"; // Replace with your actual API URL
+
 function Register() {
   const { option } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [initialData, setInitialData] = useState(() => {
     const savedData = sessionStorage.getItem("registerFormData");
@@ -79,12 +84,69 @@ function Register() {
 
   const inputs = option === "doctor" ? doctorInputs : commonInputs;
 
-  const handleFormSubmit = (formData) => {
-    console.log("Form submitted:", formData);
-    sessionStorage.setItem("registerFormData", JSON.stringify(formData));
-
-    
-    navigate("/dashboard");
+  const handleFormSubmit = async (formData) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Store form data in session storage for potential use later
+      sessionStorage.setItem("registerFormData", JSON.stringify(formData));
+      
+      // Prepare the request data
+      const requestData = {
+        userName: formData.email, // Using email as username
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        age: parseInt(formData.age),
+        phoneNumber: formData.phone,
+        address: formData.address,
+        gender: formData.gender
+      };
+      
+      // Add specialty for doctor registration
+      if (option === "doctor") {
+        requestData.specialty = formData.specialty;
+      }
+      
+      // Determine which API endpoint to use
+      const apiUrl = option === "doctor" 
+        ? "/api/Account/DoctorRegister"
+        : "/api/Account/PatientRegister";
+      
+      // Make the API request with CORS handling
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+      
+      // Handle the response
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Registration successful:", data);
+        
+        // Store user data including any tokens returned from the API
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+        
+        // Navigate to dashboard on success
+        navigate("/dashboard");
+      } else {
+        // Handle error responses
+        const errorData = await response.json();
+        console.error("Registration failed:", errorData);
+        setError(errorData.message || "Registration failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("An error occurred during registration. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -111,6 +173,12 @@ function Register() {
       </div>
 
       <div className="container">
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+        
         <SharedForm
           title={`Create Account`}
           headerIcon="bi-person-badge"
@@ -121,6 +189,7 @@ function Register() {
           onSubmit={handleFormSubmit}
           initialData={initialData}
           useResponsiveGrid={true}
+          isLoading={isLoading}
           createAccountLink={{
             url: "/login",
             text: "Already have an account? Login",
