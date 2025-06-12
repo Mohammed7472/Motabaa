@@ -8,9 +8,6 @@ import { useState } from "react";
 import "./pagesStyles/Register.css";
 import api from '../services/api';
 
-// Define the base API URL
-const baseApiUrl = "http://motab3aa.runasp.net/api"; // Replace with your actual API URL
-
 function Register() {
   const { option } = useParams();
   const navigate = useNavigate();
@@ -110,43 +107,23 @@ function Register() {
         requestData.specialty = formData.specialty;
       }
       
-      // Determine which API endpoint to use
-      const apiEndpoint = option === "doctor" 
-        ? "/api/Account/DoctorRegister"
-        : "/api/Account/PatientRegister";
-      
-      // Use absolute URL based on environment
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'http://motab3aa.runasp.net' 
-        : '';
-      
-      // Make the API request with the correct base URL
-      const response = await fetch(`${baseUrl}${apiEndpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-      
-      // Handle the response
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Registration successful:", data);
-        
-        // Store user data including any tokens returned from the API
-        if (data.token) {
-          localStorage.setItem("authToken", data.token);
-        }
-        
-        // Navigate to dashboard on success
-        navigate("/dashboard");
+      // Use the API client instead of fetch
+      let data;
+      if (option === "doctor") {
+        data = await api.auth.registerDoctor(requestData);
       } else {
-        // Handle error responses
-        const errorData = await response.json();
-        console.error("Registration failed:", errorData);
-        setError(errorData.message || "Registration failed. Please try again.");
+        data = await api.auth.registerPatient(requestData);
       }
+      
+      console.log("Registration successful:", data);
+      
+      // Store user data including any tokens returned from the API
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+      }
+      
+      // Navigate to dashboard on success
+      navigate("/dashboard");
     } catch (err) {
       console.error("Registration error:", err);
       setError(err.message || "An error occurred during registration. Please try again.");
