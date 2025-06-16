@@ -4,7 +4,7 @@ import RectangleShape from "../components/RectangleShape";
 import SharedForm from "../components/SharedForm";
 import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./pagesStyles/Register.css";
 import api from '../services/api';
 
@@ -13,12 +13,50 @@ function Register() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [specializations, setSpecializations] = useState([]);
+  const [specializationsLoading, setSpecializationsLoading] = useState(false);
 
   const [initialData, setInitialData] = useState(() => {
     const savedData = sessionStorage.getItem("registerFormData");
     return savedData ? JSON.parse(savedData) : {};
   });
 
+  // Fetch specializations when component mounts and option is doctor
+  useEffect(() => {
+    if (option === "doctor") {
+      fetchSpecializations();
+    }
+  }, [option]);
+
+  // Function to fetch specializations from API
+  const fetchSpecializations = async () => {
+    try {
+      setSpecializationsLoading(true);
+      const data = await api.specialization.getAll();
+      // Transform the data for dropdown options
+      const options = data.map(spec => ({
+        value: spec.id,
+        label: spec.name
+      }));
+      setSpecializations(options);
+    } catch (err) {
+      console.error("Error fetching specializations:", err);
+      // Set default specializations in case of error
+      setSpecializations([
+        { value: "cardiology", label: "Cardiology" },
+        { value: "dermatology", label: "Dermatology" },
+        { value: "neurology", label: "Neurology" },
+        { value: "orthopedics", label: "Orthopedics" },
+        { value: "pediatrics", label: "Pediatrics" },
+        { value: "psychiatry", label: "Psychiatry" },
+        { value: "surgery", label: "Surgery" },
+        { value: "urology", label: "Urology" },
+        { value: "other", label: "Other" }
+      ]);
+    } finally {
+      setSpecializationsLoading(false);
+    }
+  };
   
   const commonInputs = [
     {
@@ -73,8 +111,11 @@ function Register() {
     commonInputs[0], 
     {
       icon: "bi-person-badge-fill",
-      placeholder: "Your Specialty",
+      placeholder: "Select Your Specialty",
       name: "specialty",
+      type: "select",
+      options: specializations,
+      loading: specializationsLoading,
       required: true,
     },
     ...commonInputs.slice(1), 
@@ -120,6 +161,17 @@ function Register() {
       // Store user data including any tokens returned from the API
       if (data.token) {
         localStorage.setItem("authToken", data.token);
+      }
+      
+      // Store user role based on registration type
+      localStorage.setItem("userRole", option === "doctor" ? "Doctor" : "Patient");
+      
+      // Store user data if available
+      if (data.user) {
+        localStorage.setItem("userData", JSON.stringify(data.user));
+        
+        // Dispatch a storage event to notify other components of the change
+        window.dispatchEvent(new Event('storage'));
       }
       
       // Navigate to dashboard on success

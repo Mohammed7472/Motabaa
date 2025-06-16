@@ -2,94 +2,172 @@
 .dashboard-container {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(180deg, #e6f3ff 0%, #ffffff 100%);
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  background-color: #f8f9fa;
 }
 
 .dashboard-content {
+  margin-top: 100px; /* Increased margin to accommodate search bar */
+  padding: 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 110px 20px 60px;
-  width: 100%;
+  flex: 1;
 }
 
 .cards-container {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 40px;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  margin: 30px auto;
+  gap: 30px;
+  max-width: 1200px;
   width: 100%;
-  max-width: 850px;
+  margin: 20px auto 0; /* Added top margin for spacing */
+  padding: 20px;
 }
 
-.cards-container > a:last-child {
-  grid-column: 1 / span 2;
-  justify-self: center;
-  margin-top: 10px;
+/* Search results container */
+.search-results-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 30px;
+  padding: 15px;
 }
 
-/* Responsive styles for max width devices */
-@media (max-width: 1200px) {
-  .cards-container {
-    max-width: 800px;
-    gap: 35px;
-  }
+.search-results-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* Responsive styles for max width devices */
-@media (max-width: 992px) {
-  .dashboard-content {
-    padding-top: 100px;
-  }
-
-  .cards-container {
-    max-width: 750px;
-    gap: 30px;
-  }
+.search-results-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive styles for max width devices */
-@media (max-width: 830px) {
-  .dashboard-content {
-    padding-top: 90px;
-  }
+.search-results-title {
+  color: #2e99dc;
+  font-size: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  text-align: center;
+}
 
-  .cards-container {
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-result-item {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Patient Profile Styles */
+.patient-profile-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.patient-profile-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.patient-profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.profile-title {
+  color: #2e99dc;
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  text-align: center;
+}
+
+.profile-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.profile-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.profile-label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.profile-value {
+  color: #333;
+  font-size: 16px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #2e99dc;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .profile-info {
     grid-template-columns: 1fr;
-    max-width: 400px;
-    gap: 30px;
   }
-
-  .cards-container > a:last-child {
-    grid-column: 1;
-    margin-top: 0;
+  
+  .patient-profile-card {
+    padding: 20px;
   }
-}
-
-/* Responsive styles for max width devices */
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 80px 15px 40px;
-  }
-
-  .cards-container {
-    max-width: 320px;
-    gap: 25px;
+  
+  .profile-title {
+    font-size: 20px;
   }
 }
 
-/* Responsive styles for max width devices */
-@media (max-width: 400px) {
+@media (max-width: 576px) {
   .dashboard-content {
-    padding: 70px 10px 30px;
+    padding: 15px 10px;
+    margin-top: 80px; /* Adjust for smaller screens */
   }
-
-  .cards-container {
-    max-width: 280px;
-    gap: 20px;
+  
+  .patient-profile-container {
+    padding: 10px;
+  }
+  
+  .patient-profile-card {
+    padding: 15px;
+  }
+  
+  .profile-value {
+    font-size: 14px;
   }
 }

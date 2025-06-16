@@ -111,19 +111,39 @@ function SharedForm({
           <span className="icon">
             <i className={`bi ${input.icon}`}></i>
           </span>
-          <select
-            name={input.name}
-            value={formData[input.name] || ""}
-            onChange={handleInputChange}
-            required={input.required}
-            className="form-select"
-          >
-            {input.options.map((option, idx) => (
-              <option key={idx} value={option.value}>
-                {option.label}
+          {input.loading ? (
+            <select
+              name={input.name}
+              className="form-select"
+              disabled
+              required={input.required}
+            >
+              <option value="">Loading specializations...</option>
+            </select>
+          ) : (
+            <select
+              name={input.name}
+              value={formData[input.name] || ""}
+              onChange={handleInputChange}
+              required={input.required}
+              className="form-select"
+            >
+              <option value="" disabled>
+                {input.placeholder || "Select an option"}
               </option>
-            ))}
-          </select>
+              {input.options && input.options.length > 0 ? (
+                input.options.map((option, idx) => (
+                  <option key={idx} value={option.value}>
+                    {option.label}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  No options available
+                </option>
+              )}
+            </select>
+          )}
         </div>
       );
     }

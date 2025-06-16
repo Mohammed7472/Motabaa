@@ -66,6 +66,18 @@ function Login() {
       // Store user data if needed
       if (data.user) {
         localStorage.setItem("userData", JSON.stringify(data.user));
+        
+        // Store user role separately for easy access
+        if (data.user.role) {
+          localStorage.setItem("userRole", data.user.role);
+        } else if (data.user.isDoctor) {
+          localStorage.setItem("userRole", "Doctor");
+        } else {
+          localStorage.setItem("userRole", "Patient");
+        }
+        
+        // Dispatch a storage event to notify other components of the change
+        window.dispatchEvent(new Event('storage'));
       }
       
       // Navigate to dashboard
