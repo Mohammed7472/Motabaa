@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
 import { useState } from "react";
-import api from '../services/api';
+import api from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -37,54 +37,71 @@ function Login() {
         I need to <strong>create an account</strong>
       </>
     ),
-    url: "/register-as",
+    url: "/register",
   };
 
   const handleLoginSubmit = async (formData) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Prepare the request data
       const requestData = {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       };
-      
+
       console.log("Login request data:", requestData);
-      
+
+      // Clear any existing user data before making the API call
+      localStorage.removeItem("userData");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("authToken");
+
       // Use the API client
       const data = await api.auth.login(requestData);
-      
+
       console.log("Login successful:", data);
-      
+
       // Store authentication token
       if (data.token) {
         localStorage.setItem("authToken", data.token);
       }
-      
+
       // Store user data if needed
       if (data.user) {
-        localStorage.setItem("userData", JSON.stringify(data.user));
-        
-        // Store user role separately for easy access
+        // Determine user role - prioritize explicit role field
+        let userRole = "Patient";
         if (data.user.role) {
-          localStorage.setItem("userRole", data.user.role);
+          userRole = data.user.role;
+          console.log("Setting user role from role field:", userRole);
         } else if (data.user.isDoctor) {
-          localStorage.setItem("userRole", "Doctor");
-        } else {
-          localStorage.setItem("userRole", "Patient");
+          userRole = "Doctor";
+          console.log("Setting user role from isDoctor field:", userRole);
         }
+
+        // Store user role
+        localStorage.setItem("userRole", userRole);
+        console.log("User role stored in localStorage:", userRole);
+
+        // Ensure role is included in the user data
+        const userData = { ...data.user, role: userRole };
         
+        // Store user data
+        localStorage.setItem("userData", JSON.stringify(userData));
+        console.log("User data stored in localStorage:", userData);
+
         // Dispatch a storage event to notify other components of the change
-        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new Event("storage"));
       }
-      
+
       // Navigate to dashboard
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.message || "An error occurred during login. Please try again.");
+      setError(
+        err.message || "An error occurred during login. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }

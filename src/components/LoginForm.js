@@ -2,7 +2,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./componentsStyles/form.css";
 import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+
 function Form() {
   return (
     <div className="container">
@@ -22,8 +23,7 @@ function Form() {
         </div>
         <button className="go-btn">
           <i className="bi bi-arrow-right-circle"></i>
-        </button>
-
+        </button>{" "}
         <Link
           to="/register"
           className="create-account"
@@ -32,7 +32,6 @@ function Form() {
           I need to{" "}
           <span style={{ fontWeight: "bold" }}>create an account</span>
         </Link>
-
         <div>Sign in with</div>
         <div className="social">
           <span className="facebook-icon">

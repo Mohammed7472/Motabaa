@@ -65,11 +65,36 @@ const departmentsData = {
 
 const DepartmentDetails = () => {
   const { departmentId } = useParams();
-  const department = departmentsData[departmentId] || {
-    title: "Department Not Found",
-    description: "Sorry, the requested department does not exist.",
-    doctors: [],
-  };
+  
+  // Normalize the department ID by converting to lowercase and replacing spaces with hyphens
+  const normalizedDepartmentId = departmentId.toLowerCase();
+  
+  // Find the department by normalized ID or by direct match
+  let department = null;
+  
+  // First try to find by direct key match
+  if (departmentsData[normalizedDepartmentId]) {
+    department = departmentsData[normalizedDepartmentId];
+  } else {
+    // If not found, try to find by normalizing the keys
+    const departmentKey = Object.keys(departmentsData).find(key => {
+      return key.toLowerCase() === normalizedDepartmentId ||
+             key.toLowerCase().replace(/\s+/g, '-') === normalizedDepartmentId;
+    });
+    
+    if (departmentKey) {
+      department = departmentsData[departmentKey];
+    }
+  }
+  
+  // If still not found, use the default "not found" department
+  if (!department) {
+    department = {
+      title: "Department Not Found",
+      description: "Sorry, the requested department does not exist.",
+      doctors: [],
+    };
+  }
 
   return (
     <div className="department-details-container">

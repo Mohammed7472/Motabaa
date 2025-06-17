@@ -168,6 +168,17 @@ function Register() {
       
       // Store user data if available
       if (data.user) {
+        // Make sure specialty is included for doctors
+        if (option === "doctor" && formData.specialty) {
+          // Add specialty to user data
+          data.user.specialty = formData.specialty;
+          
+          // If specialty is an object with label/value (from dropdown), use the label
+          if (typeof data.user.specialty === 'object' && data.user.specialty.label) {
+            data.user.specialty = data.user.specialty.label;
+          }
+        }
+        
         localStorage.setItem("userData", JSON.stringify(data.user));
         
         // Dispatch a storage event to notify other components of the change

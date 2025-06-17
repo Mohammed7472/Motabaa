@@ -60,17 +60,20 @@ const PatientProfile = ({ patientData }) => {
 const Dashboard = () => {
   const [patientData, setPatientData] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const registrationDataProcessed = React.useRef(false);
   
-  // Check if user is a doctor from localStorage
-  const isDoctor = localStorage.getItem("userRole") === "Doctor";
-
-  // Get user data from localStorage on component mount or when localStorage changes
+  // Get user role and data from localStorage on component mount
   useEffect(() => {
     // Function to load user data from localStorage
     const loadUserData = () => {
+      // Get user role from localStorage
+      const storedUserRole = localStorage.getItem("userRole");
+      setUserRole(storedUserRole);
+      
       // Debug: Log all localStorage keys
       console.log("All localStorage keys:", Object.keys(localStorage));
+      console.log("Current userRole from localStorage:", storedUserRole);
       
       const storedUserData = localStorage.getItem("userData");
       console.log("Raw userData from localStorage:", storedUserData);
@@ -142,6 +145,15 @@ const Dashboard = () => {
     }
   }, [userData]);
 
+  // Determine if user is a doctor based on userRole state
+  const isDoctor = userRole === "Doctor";
+  
+  // Debug: Log the current user role and doctor status
+  useEffect(() => {
+    console.log("Current userRole state:", userRole);
+    console.log("isDoctor determined as:", isDoctor);
+  }, [userRole, isDoctor]);
+
   // Format user name with Dr. prefix if user is a doctor
   const formatUserName = () => {
     if (!userData?.fullName) return "User";
@@ -164,29 +176,77 @@ const Dashboard = () => {
     return isDoctor ? doctorAvatar : patientAvatar;
   };
 
-  const cards = [
-    {
-      id: 1,
-      title: "DEPARTMENTS",
-      icon: departmentsIcon,
-      link: "/departments",
-      className: "departments",
-    },
-    {
-      id: 2,
-      title: "RADIOLOGY AND LABORATORY TESTS",
-      icon: radiologyIcon,
-      link: "/radiology-labs",
-      className: "radiology",
-    },
-    {
-      id: 3,
-      title: "MEDICAL SESSIONS",
-      icon: sessionsIcon,
-      link: "/sessions",
-      className: "sessions",
-    },
-  ];
+  // Get doctor's department based on email or other user data
+  const getDoctorDepartment = () => {
+    if (!userData) return null;
+    
+    // Check if specialty is directly available in userData
+    if (userData.specialty) {
+      return userData.specialty;
+    }
+    
+    // This is a simplified example. In a real app, you would fetch this from an API
+    // or have it stored in the user data from the backend
+    const email = userData.email?.toLowerCase();
+    
+    // Map emails to departments (for demonstration purposes)
+    const departmentMap = {
+      'hamdi@gmail.com': 'Cardiology',
+      'doctor@example.com': 'Neurology',
+      // Add more mappings as needed
+    };
+    
+    // Default to a generic department if email not found in mapping
+    return departmentMap[email] || 'Department';
+  };
+
+  // Create cards based on user role
+  const getCards = () => {
+    if (isDoctor) {
+      // For doctors, only show their department
+      const doctorDepartment = getDoctorDepartment();
+      
+      // Add null check to prevent errors when doctorDepartment is null
+      const departmentLink = doctorDepartment ? 
+        `/departments/${doctorDepartment.toLowerCase().replace(/\s+/g, '-')}` : 
+        '/departments';
+      
+      return [
+        {
+          id: 1,
+          title: doctorDepartment || 'Department',
+          icon: departmentsIcon,
+          link: departmentLink,
+          className: "departments",
+        }
+      ];
+    } else {
+      // For patients, show all cards
+      return [
+        {
+          id: 1,
+          title: "DEPARTMENTS",
+          icon: departmentsIcon,
+          link: "/departments",
+          className: "departments",
+        },
+        {
+          id: 2,
+          title: "RADIOLOGY AND LABORATORY TESTS",
+          icon: radiologyIcon,
+          link: "/radiology-labs",
+          className: "radiology",
+        },
+        {
+          id: 3,
+          title: "MEDICAL SESSIONS",
+          icon: sessionsIcon,
+          link: "/sessions",
+          className: "sessions",
+        },
+      ];
+    }
+  };
 
   // Callback function to receive patient data from the navbar
   const handlePatientDataUpdate = (data) => {
@@ -207,8 +267,8 @@ const Dashboard = () => {
         {patientData ? (
           <PatientProfile patientData={patientData} />
         ) : (
-          <div className="cards-container">
-            {cards.map((card) => (
+          <div className={isDoctor ? "single-department-card" : "cards-container"}>
+            {getCards().map((card) => (
               <DashboardCard
                 key={card.id}
                 title={card.title}
