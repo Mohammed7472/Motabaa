@@ -97,10 +97,63 @@ const api = {
 
   // Specialization endpoints
   specialization: {
-    getAll: () =>
-      api.request("/api/Specialization", {
-        method: "GET",
-      }),
+    getAll: async () => {
+      try {
+        const data = await api.request("/api/Specialization", {
+          method: "GET",
+        });
+
+        // Validate the response format
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid specialization data format");
+        }
+
+        // Map and validate each specialization
+        return data
+          .map((spec) => {
+            // Ensure we have both an ID and name
+            if (
+              !spec ||
+              (!spec.specializationId && !spec.id) ||
+              (!spec.specializationName && !spec.name)
+            ) {
+              console.warn("Invalid specialization entry:", spec);
+              return null;
+            }
+
+            return {
+              specializationId: spec.specializationId || spec.id,
+              specializationName: spec.specializationName || spec.name,
+            };
+          })
+          .filter(Boolean); // Remove null entries
+      } catch (error) {
+        console.error("Error fetching specializations:", error);
+        throw new Error(error.message || "Failed to fetch specializations");
+      }
+    },
+
+    getById: async (id) => {
+      try {
+        const data = await api.request(`/api/Specialization/${id}`, {
+          method: "GET",
+        });
+
+        if (!data || (!data.specializationName && !data.name)) {
+          throw new Error("Invalid specialization data");
+        }
+
+        return {
+          id: data.specializationId || data.id,
+          name: data.specializationName || data.name,
+        };
+      } catch (error) {
+        console.error(`Error fetching specialization ${id}:`, error);
+        throw new Error(
+          error.message || "Failed to fetch specialization details"
+        );
+      }
+    },
   },
 
   // Add more API endpoints as needed

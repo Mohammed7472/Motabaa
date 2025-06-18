@@ -45,62 +45,66 @@ function Login() {
       setIsLoading(true);
       setError(null);
 
+      // Clear all existing user data from storage
+      localStorage.clear();
+      sessionStorage.clear();
+
       // Prepare the request data
       const requestData = {
         email: formData.email,
         password: formData.password,
       };
 
-      console.log("Login request data:", requestData);
+      console.log("Login request data:", requestData); // Make the login API call
+      const response = await api.auth.login(requestData);
+      console.log("Login API response:", response);
 
-      // Clear any existing user data before making the API call
-      localStorage.removeItem("userData");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("authToken");
-
-      // Use the API client
-      const data = await api.auth.login(requestData);
-
-      console.log("Login successful:", data);
+      if (!response || !response.token) {
+        throw new Error("Invalid response from server");
+      }
 
       // Store authentication token
-      if (data.token) {
-        localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", response.token);
+
+      // Create user data object from the response
+      const userData = {
+        id: response.id,
+        email: response.email,
+        userName: response.userName,
+        role: response.role,
+        // Add any other fields that come from the API
+      };
+
+      // Store user role directly from the API response
+      const userRole = response.role;
+      if (!userRole) {
+        throw new Error("No role information received");
       }
 
-      // Store user data if needed
-      if (data.user) {
-        // Determine user role - prioritize explicit role field
-        let userRole = "Patient";
-        if (data.user.role) {
-          userRole = data.user.role;
-          console.log("Setting user role from role field:", userRole);
-        } else if (data.user.isDoctor) {
-          userRole = "Doctor";
-          console.log("Setting user role from isDoctor field:", userRole);
-        }
+      // Store user role
+      localStorage.setItem("userRole", userRole); // Store complete user data
+      const completeUserData = {
+        id: response.id,
+        email: response.email,
+        userName: response.userName,
+        role: userRole,
+        fullName: response.userName, // Use userName as fallback for fullName
+        // Add any additional fields needed for the UI
+      };
 
-        // Store user role
-        localStorage.setItem("userRole", userRole);
-        console.log("User role stored in localStorage:", userRole);
+      localStorage.setItem("userData", JSON.stringify(completeUserData));
+      console.log("Stored user data:", completeUserData);
 
-        // Ensure role is included in the user data
-        const userData = { ...data.user, role: userRole };
-        
-        // Store user data
-        localStorage.setItem("userData", JSON.stringify(userData));
-        console.log("User data stored in localStorage:", userData);
-
-        // Dispatch a storage event to notify other components of the change
-        window.dispatchEvent(new Event("storage"));
-      }
+      // Notify other components of the change
+      window.dispatchEvent(new Event("storage"));
 
       // Navigate to dashboard
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
       setError(
-        err.message || "An error occurred during login. Please try again."
+        err.message ||
+          "Login failed. Please check your credentials and try again."
       );
     } finally {
       setIsLoading(false);

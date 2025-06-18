@@ -71,7 +71,7 @@ function Home() {
         <h2 className="section-title">How It Works</h2>
         <div className="features-container">
           {/* feature Card */}
-        <div className="feature-card">
+          <div className="feature-card">
             <div className="feature-icon">
               <FaUserMd />
             </div>
@@ -83,7 +83,7 @@ function Home() {
           </div>
 
           {/* feature Card */}
-        <div className="feature-card">
+          <div className="feature-card">
             <div className="feature-icon">
               <FaFileMedical />
             </div>
@@ -95,7 +95,7 @@ function Home() {
           </div>
 
           {/* feature Card */}
-        <div className="feature-card">
+          <div className="feature-card">
             <div className="feature-icon">
               <FaHospital />
             </div>
@@ -107,13 +107,18 @@ function Home() {
           </div>
 
           {/* feature Card */}
-        <div className="feature-card">
+          <div className="feature-card">
             <div className="feature-icon">
               <FaHeartbeat />
             </div>
             <h3>Track Health Progress</h3>
             <p>Monitor your health journey and track improvements over time.</p>
           </div>
+        </div>
+        <div className="text-center mt-4">
+          <Link to="/services" className="btn btn-outline-primary">
+            View All Services
+          </Link>
         </div>
       </section>
 
@@ -122,7 +127,7 @@ function Home() {
         <h2 className="section-title">What Our Users Say</h2>
         <div className="testimonials-container">
           {/* testimonial Card */}
-        <div className="testimonial-card">
+          <div className="testimonial-card">
             <div className="testimonial-content">
               <p>
                 "The platform has made managing my medical records so much
@@ -136,7 +141,7 @@ function Home() {
           </div>
 
           {/* testimonial Card */}
-        <div className="testimonial-card">
+          <div className="testimonial-card">
             <div className="testimonial-content">
               <p>
                 "As a doctor, this platform helps me keep track of my patients'

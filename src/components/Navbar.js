@@ -60,10 +60,11 @@ function Navbar() {
 
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
+              {" "}
               <li className="nav-item">
-                <a className="nav-link fw-bold" href="/#">
+                <Link to="/services" className="nav-link fw-bold">
                   Services
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
                 <Link to="/about" className="nav-link fw-bold">

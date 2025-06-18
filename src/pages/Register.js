@@ -6,7 +6,7 @@ import facebook from "../images/facebook.png";
 import gmail from "../images/gmail.png";
 import { useState, useEffect } from "react";
 import "./pagesStyles/Register.css";
-import api from '../services/api';
+import api from "../services/api";
 
 function Register() {
   const { option } = useParams();
@@ -32,38 +32,62 @@ function Register() {
   const fetchSpecializations = async () => {
     try {
       setSpecializationsLoading(true);
-      const data = await api.specialization.getAll();
-      // Transform the data for dropdown options
-      const options = data.map(spec => ({
-        value: spec.id,
-        label: spec.name
-      }));
+      setError(null); // Clear any previous errors
+
+      // Make the API call
+      const response = await api.specialization.getAll();
+
+      // Log the API response for debugging
+      console.log("Specialization API response:", response);
+
+      // Check if response exists and is an array
+      if (!response || !Array.isArray(response)) {
+        throw new Error("Invalid API response format");
+      }
+
+      // Transform the data for dropdown options - handle both possible response formats
+      const options = response
+        .map((spec) => {
+          const id = spec.specializationId || spec.id;
+          const name = spec.specializationName || spec.name;
+
+          // Validate each specialization
+          if (!id || !name) {
+            console.warn("Invalid specialization data:", spec);
+            return null;
+          }
+
+          return {
+            value: parseInt(id),
+            label: name.trim(),
+          };
+        })
+        .filter((opt) => opt !== null); // Remove any invalid entries
+
+      // Validate we have options after transformation
+      if (options.length === 0) {
+        throw new Error("No valid specializations received from API");
+      }
+
+      console.log("Transformed specialization options:", options);
       setSpecializations(options);
     } catch (err) {
       console.error("Error fetching specializations:", err);
-      // Set default specializations in case of error
-      setSpecializations([
-        { value: "cardiology", label: "Cardiology" },
-        { value: "dermatology", label: "Dermatology" },
-        { value: "neurology", label: "Neurology" },
-        { value: "orthopedics", label: "Orthopedics" },
-        { value: "pediatrics", label: "Pediatrics" },
-        { value: "psychiatry", label: "Psychiatry" },
-        { value: "surgery", label: "Surgery" },
-        { value: "urology", label: "Urology" },
-        { value: "other", label: "Other" }
-      ]);
+      setError("Failed to load specializations. Please try again later.");
+      setSpecializations([]); // Clear any existing specializations
     } finally {
       setSpecializationsLoading(false);
     }
   };
-  
   const commonInputs = [
     {
       icon: "bi-person-fill",
       placeholder: "Full Name",
       name: "fullName",
       required: true,
+      minLength: 3, // Ensure name is at least 3 characters
+      pattern: "^[A-Za-z. ]{3,50}$", // Allow letters, spaces, and dots for titles (e.g., "Dr.")
+      title: "Please enter a valid full name",
     },
     {
       icon: "bi-envelope-fill",
@@ -106,9 +130,8 @@ function Register() {
     },
   ];
 
-  
   const doctorInputs = [
-    commonInputs[0], 
+    commonInputs[0],
     {
       icon: "bi-person-badge-fill",
       placeholder: "Select Your Specialty",
@@ -117,8 +140,9 @@ function Register() {
       options: specializations,
       loading: specializationsLoading,
       required: true,
+      valueType: "number", // Explicitly specify that the value should be a number
     },
-    ...commonInputs.slice(1), 
+    ...commonInputs.slice(1),
   ];
 
   const inputs = option === "doctor" ? doctorInputs : commonInputs;
@@ -127,27 +151,53 @@ function Register() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
+      // Validate full name
+      if (!formData.fullName || formData.fullName.trim().length < 3) {
+        setError("Please enter a valid full name (minimum 3 characters)");
+        return;
+      }
+
       // Store form data in session storage for potential use later
       sessionStorage.setItem("registerFormData", JSON.stringify(formData));
-      
-      // Prepare the request data
+
+      // Prepare the request data - ensure userName is set from fullName
+      console.log("Form data received:", formData);
+
       const requestData = {
-        userName: formData.email,
-        fullName: formData.fullName,
+        userName: formData.fullName.trim(), // Set userName directly from fullName, removing any extra spaces
+        fullName: formData.fullName.trim(),
         email: formData.email,
         password: formData.password,
         age: parseInt(formData.age),
         phoneNumber: formData.phone,
         address: formData.address,
-        gender: formData.gender
+        gender: formData.gender,
       };
-      
-      // Add specialty for doctor registration
+
+      // Log the request data for verification
+      console.log("Request data to be sent:", requestData); // Add specialty for doctor registration
       if (option === "doctor") {
-        requestData.specialty = formData.specialty;
+        // Validate the specialty selection
+        if (!formData.specialty || !formData.specialty.value) {
+          setError("Please select a specialization");
+          return;
+        }
+
+        // Ensure specializationId is sent as a number
+        const specializationId = parseInt(formData.specialty.value);
+        if (isNaN(specializationId) || specializationId <= 0) {
+          setError("Invalid specialization selected");
+          return;
+        }
+
+        requestData.specializationId = specializationId;
+        console.log(
+          "Sending doctor registration with specializationId:",
+          requestData.specializationId
+        );
       }
-      
+
       // Use the API client instead of fetch
       let data;
       if (option === "doctor") {
@@ -155,41 +205,50 @@ function Register() {
       } else {
         data = await api.auth.registerPatient(requestData);
       }
-      
+
       console.log("Registration successful:", data);
-      
+
       // Store user data including any tokens returned from the API
       if (data.token) {
         localStorage.setItem("authToken", data.token);
       }
-      
+
       // Store user role based on registration type
-      localStorage.setItem("userRole", option === "doctor" ? "Doctor" : "Patient");
-      
+      localStorage.setItem(
+        "userRole",
+        option === "doctor" ? "Doctor" : "Patient"
+      );
+
       // Store user data if available
       if (data.user) {
         // Make sure specialty is included for doctors
         if (option === "doctor" && formData.specialty) {
           // Add specialty to user data
           data.user.specialty = formData.specialty;
-          
+
           // If specialty is an object with label/value (from dropdown), use the label
-          if (typeof data.user.specialty === 'object' && data.user.specialty.label) {
+          if (
+            typeof data.user.specialty === "object" &&
+            data.user.specialty.label
+          ) {
             data.user.specialty = data.user.specialty.label;
           }
         }
-        
+
         localStorage.setItem("userData", JSON.stringify(data.user));
-        
+
         // Dispatch a storage event to notify other components of the change
-        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new Event("storage"));
       }
-      
+
       // Navigate to dashboard on success
       navigate("/dashboard");
     } catch (err) {
       console.error("Registration error:", err);
-      setError(err.message || "An error occurred during registration. Please try again.");
+      setError(
+        err.message ||
+          "An error occurred during registration. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -224,7 +283,7 @@ function Register() {
             {error}
           </div>
         )}
-        
+
         <SharedForm
           title={`Create Account`}
           headerIcon="bi-person-badge"

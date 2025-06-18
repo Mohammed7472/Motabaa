@@ -17,6 +17,7 @@ import PrescriptionConfirmation from "./pages/PrescriptionConfirmation";
 import RadiologyLabs from "./pages/RadiologyLabs";
 import AddRadiologyLab from "./pages/AddRadiologyLab";
 import LabReportDetails from "./pages/LabReportDetails";
+import Services from "./pages/Services";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterAs />} />
           <Route path="/healthDetails" element={<HealthDetails />} />
