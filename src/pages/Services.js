@@ -2,7 +2,6 @@ import React from "react";
 import "../components/componentsStyles/services.css";
 import Logo from "../components/Logo";
 import ShadowShape from "../components/ShadowShape";
-import { Link } from "react-router-dom";
 import {
   FaClipboardList,
   FaChartLine,
@@ -68,6 +67,7 @@ function Services() {
         <div className="services-header">
           <h1>Services</h1>
         </div>
+
         <div className="services-grid">
           {services.map((service, index) => (
             <div className="service-card" key={index}>
@@ -76,16 +76,14 @@ function Services() {
               <p className="service-description">{service.description}</p>
             </div>
           ))}
-        </div>{" "}
-        <div className="get-started-section">
+        </div>
+
+        <div className="services-cta">
           <h2>Ready to Get Started?</h2>
           <p>
-            Start managing your health journey with our comprehensive medical
-            tracking system
+            Book an appointment or consult with our healthcare professionals
           </p>
-          <Link to="/register" className="register-btn">
-            Register Now
-          </Link>
+          <button className="btn btn-primary">Register Now</button>
         </div>
       </div>
     </div>

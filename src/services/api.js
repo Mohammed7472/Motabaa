@@ -112,18 +112,18 @@ const api = {
         return data
           .map((spec) => {
             // Ensure we have both an ID and name
-            if (
-              !spec ||
-              (!spec.specializationId && !spec.id) ||
-              (!spec.specializationName && !spec.name)
-            ) {
+            if (!spec || (!spec.id && !spec.specializationId) || (!spec.name && !spec.specializationName)) {
               console.warn("Invalid specialization entry:", spec);
               return null;
             }
 
+            // Return the specialization with consistent property names
             return {
-              specializationId: spec.specializationId || spec.id,
-              specializationName: spec.specializationName || spec.name,
+              id: spec.id || spec.specializationId,
+              name: spec.name || spec.specializationName,
+              // Keep original properties for backward compatibility
+              specializationId: spec.id || spec.specializationId,
+              specializationName: spec.name || spec.specializationName
             };
           })
           .filter(Boolean); // Remove null entries

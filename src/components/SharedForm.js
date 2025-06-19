@@ -121,28 +121,34 @@ function SharedForm({
               <option value="">Loading specializations...</option>
             </select>
           ) : (
-            <select
-              name={input.name}
-              value={formData[input.name] || ""}
-              onChange={handleInputChange}
-              required={input.required}
-              className="form-select"
-            >
-              <option value="" disabled>
-                {input.placeholder || "Select an option"}
-              </option>
-              {input.options && input.options.length > 0 ? (
-                input.options.map((option, idx) => (
-                  <option key={idx} value={option.value}>
-                    {option.label}
-                  </option>
-                ))
-              ) : (
+            <>
+              <select
+                name={input.name}
+                value={formData[input.name] || ""}
+                onChange={handleInputChange}
+                required={input.required}
+                className={`form-select ${input.errorMessage ? 'is-invalid' : ''}`}
+                disabled={!input.options || input.options.length === 0}
+              >
                 <option value="" disabled>
-                  No options available
+                  {!input.options || input.options.length === 0
+                    ? "No options available"
+                    : input.placeholder || "Select an option"}
                 </option>
+                {input.options && input.options.length > 0 && 
+                  input.options.map((option, idx) => (
+                    <option key={idx} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))
+                }
+              </select>
+              {input.errorMessage && (
+                <div className="invalid-feedback d-block">
+                  {input.errorMessage}
+                </div>
               )}
-            </select>
+            </>
           )}
         </div>
       );
