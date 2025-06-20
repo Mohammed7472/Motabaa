@@ -17,6 +17,7 @@ import PrescriptionConfirmation from "./pages/PrescriptionConfirmation";
 import RadiologyLabs from "./pages/RadiologyLabs";
 import AddRadiologyLab from "./pages/AddRadiologyLab";
 import LabReportDetails from "./pages/LabReportDetails";
+import PatientDetails from "./pages/PatientDetails";
 import Services from "./pages/Services";
 import { UserProvider } from './context/UserContext';
 
@@ -48,6 +49,8 @@ function App() {
             <Route path="/radiology-labs" element={<RadiologyLabs />} />
             <Route path="/radiology-labs/add" element={<AddRadiologyLab />} />
             <Route path="/lab-report-details" element={<LabReportDetails />} />
+            <Route path="/patient-details" element={<PatientDetails />} />
+            <Route path="/patients/:id" element={<PatientDetails />} />
             <Route
               path="/prescription-confirmation"
               element={<PrescriptionConfirmation />}

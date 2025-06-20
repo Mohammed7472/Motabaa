@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../components/componentsStyles/services.css";
 import Logo from "../components/Logo";
 import ShadowShape from "../components/ShadowShape";
@@ -81,9 +82,11 @@ function Services() {
         <div className="services-cta">
           <h2>Ready to Get Started?</h2>
           <p>
-            Book an appointment or consult with our healthcare professionals
+            Experience seamless health tracking and management with our comprehensive medical platform
           </p>
-          <button className="btn btn-primary">Register Now</button>
+          <Link to="/register">
+            <button className="btn btn-primary">Register Now</button>
+          </Link>
         </div>
       </div>
     </div>
