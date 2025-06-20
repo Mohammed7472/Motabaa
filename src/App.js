@@ -50,7 +50,6 @@ function App() {
             <Route path="/radiology-labs/add" element={<AddRadiologyLab />} />
             <Route path="/lab-report-details" element={<LabReportDetails />} />
             <Route path="/patient-details" element={<PatientDetails />} />
-            <Route path="/patients/:id" element={<PatientDetails />} />
             <Route
               path="/prescription-confirmation"
               element={<PrescriptionConfirmation />}

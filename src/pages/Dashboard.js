@@ -106,7 +106,8 @@ const Dashboard = () => {
     
     try {
       console.log('Searching for:', searchQuery);
-      console.log('API URL:', `http://motab3aa.runasp.net/api/Account/SearchByName?Name=${encodeURIComponent(searchQuery)}`);
+      // Use relative path to work with the proxy setup
+      console.log('API URL:', `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`);
       
       // Get token from localStorage if available
       const token = localStorage.getItem('token') || localStorage.getItem('authToken');
@@ -121,11 +122,14 @@ const Dashboard = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const response = await fetch(`http://motab3aa.runasp.net/api/Account/SearchByName?Name=${encodeURIComponent(searchQuery)}`, {
+      // Use relative path to work with the proxy setup
+      const response = await fetch(`/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`, {
         method: 'GET',
         headers: headers,
-        mode: 'cors'
+        // No need for CORS mode when using relative paths with proxy
+        credentials: 'include' // Added to include cookies if needed for authentication
       });
+      
       
       console.log('Response status:', response.status);
       console.log('Response headers:', response.headers);
@@ -141,10 +145,14 @@ const Dashboard = () => {
       
       if (Array.isArray(data)) {
         setSearchResults(data);
+        console.log('Setting search results:', data.length, 'items');
       } else if (data && typeof data === 'object') {
         // Handle case where API returns an object with results array
-        setSearchResults(data.results || data.data || [data]);
+        const resultsArray = data.results || data.data || [data];
+        console.log('Setting search results from object:', resultsArray.length, 'items');
+        setSearchResults(resultsArray);
       } else {
+        console.log('No valid search results found');
         setSearchResults([]);
       }
     } catch (error) {
@@ -163,8 +171,8 @@ const Dashboard = () => {
 
   // Handle patient card click
   const handlePatientClick = (patient) => {
-    // Navigate to patient details page with patient ID
-    navigate(`/patients/${patient.id}`, { state: { patientData: patient } });
+    // Navigate to patient details page with patient data
+    navigate('/patient-details', { state: { patientData: patient } });
   };
 
   // Doctor-specific cards definition
@@ -270,23 +278,25 @@ const Dashboard = () => {
                 <div className="search-results-card">
                   <h3 className="search-results-title">Search Results</h3>
                   <div className="patient-cards-grid">
-                    {searchResults.map((patient) => (
+                    {/* Filter to only include patients (users with specializationId === null) */}
+                    {searchResults.filter(user => user.specializationId === null).map((patient) => (
                       <div
                         key={patient.id}
-                        className="patient-card"
+                        className="modern-patient-card"
                         onClick={() => handlePatientClick(patient)}
                       >
-                        <div className="patient-avatar">
+                        <div className="modern-patient-avatar">
                           <img
                             src={patient.profileImage || patientAvatar}
-                            alt={patient.userName}
-                            className="patient-image"
+                            alt={patient.userName || 'Patient'}
+                            className="modern-patient-image"
                           />
                         </div>
-                        <div className="patient-info">
-                          <h4 className="patient-name">{patient.fullName || patient.userName}</h4>
-                          <p className="patient-email">{patient.email}</p>
-                          <p className="patient-phone">{patient.phoneNumber}</p>
+                        <div className="modern-patient-info">
+                          <h4 className="modern-patient-name">{patient.fullName || patient.userName || 'Unknown Patient'}</h4>
+                          <p className="modern-patient-email">{patient.email || 'No email provided'}</p>
+                          <p className="modern-patient-age">{patient.age ? `${patient.age} years old` : 'Age not available'}</p>
+                          <p className="patient-phone">{patient.phoneNumber || 'No phone number'}</p>
                         </div>
                       </div>
                     ))}

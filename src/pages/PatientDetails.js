@@ -41,15 +41,15 @@ const PatientDetails = () => {
     return null;
   }
 
-  // Map applicationUserType to readable format
-  const getUserType = (type) => {
+  // Map applicationUserType to gender
+  const getGender = (type) => {
     switch (type) {
       case 0:
-        return "Doctor";
+        return "Male";
       case 1:
-        return "Patient";
+        return "Female";
       default:
-        return "Unknown";
+        return "Not specified";
     }
   };
 
@@ -84,7 +84,9 @@ const PatientDetails = () => {
             </div>
             <div className="patient-header-info">
               <h1 className="patient-title">{patientData.userName}</h1>
-              <p className="patient-subtitle">{getUserType(patientData.applicationUserType)}</p>
+              <p className="patient-subtitle">
+                {getGender(patientData.applicationUserType)}
+              </p>
             </div>
           </div>
 
@@ -113,13 +115,17 @@ const PatientDetails = () => {
                   <span className="info-value">{patientData.address}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">User Type:</span>
-                  <span className="info-value">{getUserType(patientData.applicationUserType)}</span>
+                  <span className="info-label">Gender:</span>
+                  <span className="info-value">
+                    {getGender(patientData.applicationUserType)}
+                  </span>
                 </div>
                 {patientData.specializationId && (
                   <div className="info-item">
                     <span className="info-label">Specialization ID:</span>
-                    <span className="info-value">{patientData.specializationId}</span>
+                    <span className="info-value">
+                      {patientData.specializationId}
+                    </span>
                   </div>
                 )}
               </div>
@@ -141,14 +147,12 @@ const PatientDetails = () => {
           </div>
 
           <div className="action-buttons">
-            <button className="action-btn primary">
-              Schedule Appointment
+            <button className="action-btn primary">View Medical History</button>
+            <button className="action-btn secondary">
+               Chronic Diseases
             </button>
             <button className="action-btn secondary">
-              View Medical History
-            </button>
-            <button className="action-btn secondary">
-              Send Message
+              Radiology and Laboratory Tests
             </button>
           </div>
         </div>
