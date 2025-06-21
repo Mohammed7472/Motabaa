@@ -93,6 +93,12 @@ const api = {
       api.request(`/api/Patient/Profile/${patientId}`, {
         method: "GET",
       }),
+
+    getAllergies: async (patientId) => {
+      return api.request(`/api/Allergens?patientId=${patientId}`, {
+        method: "GET",
+      });
+    },
   },
 
   // Specialization endpoints
@@ -112,7 +118,11 @@ const api = {
         return data
           .map((spec) => {
             // Ensure we have both an ID and name
-            if (!spec || (!spec.id && !spec.specializationId) || (!spec.name && !spec.specializationName)) {
+            if (
+              !spec ||
+              (!spec.id && !spec.specializationId) ||
+              (!spec.name && !spec.specializationName)
+            ) {
               console.warn("Invalid specialization entry:", spec);
               return null;
             }
@@ -123,7 +133,7 @@ const api = {
               name: spec.name || spec.specializationName,
               // Keep original properties for backward compatibility
               specializationId: spec.id || spec.specializationId,
-              specializationName: spec.name || spec.specializationName
+              specializationName: spec.name || spec.specializationName,
             };
           })
           .filter(Boolean); // Remove null entries

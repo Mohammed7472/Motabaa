@@ -9,6 +9,7 @@ import { DoctorOnly, PatientOnly } from "../components/RoleBasedRender";
 import departmentsIcon from "../images/Mask group (1).png";
 import radiologyIcon from "../images/Mask group.png";
 import sessionsIcon from "../images/medical 1.png";
+// import allergyIcon from "../images/allergy-icon.png"; // Removed missing icon
 
 import patientAvatar from "../images/Patient 1.png";
 import doctorAvatar from "../images/Doctor 1.png";
@@ -61,9 +62,10 @@ const PatientProfile = ({ patientData }) => {
 };
 
 const Dashboard = () => {
-  const { userData, userRole, error, isLoading, logoutUser, isDoctor } = useUser();
+  const { userData, userRole, error, isLoading, logoutUser, isDoctor } =
+    useUser();
   const navigate = useNavigate();
-  
+
   // Search state for doctors
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -103,60 +105,70 @@ const Dashboard = () => {
 
     setIsSearching(true);
     setSearchError("");
-    
+
     try {
-      console.log('Searching for:', searchQuery);
+      console.log("Searching for:", searchQuery);
       // Use relative path to work with the proxy setup
-      console.log('API URL:', `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`);
-      
+      console.log(
+        "API URL:",
+        `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`
+      );
+
       // Get token from localStorage if available
-      const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-      
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("authToken");
+
       const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       };
-      
+
       // Add authorization header if token exists
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers["Authorization"] = `Bearer ${token}`;
       }
-      
+
       // Use relative path to work with the proxy setup
-      const response = await fetch(`/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`, {
-        method: 'GET',
-        headers: headers,
-        // No need for CORS mode when using relative paths with proxy
-        credentials: 'include' // Added to include cookies if needed for authentication
-      });
-      
-      
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-      
+      const response = await fetch(
+        `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`,
+        {
+          method: "GET",
+          headers: headers,
+          // No need for CORS mode when using relative paths with proxy
+          credentials: "include", // Added to include cookies if needed for authentication
+        }
+      );
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API Error Response:', errorText);
+        console.error("API Error Response:", errorText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
-      console.log('Search results:', data);
-      
+      console.log("Search results:", data);
+
       if (Array.isArray(data)) {
         setSearchResults(data);
-        console.log('Setting search results:', data.length, 'items');
-      } else if (data && typeof data === 'object') {
+        console.log("Setting search results:", data.length, "items");
+      } else if (data && typeof data === "object") {
         // Handle case where API returns an object with results array
         const resultsArray = data.results || data.data || [data];
-        console.log('Setting search results from object:', resultsArray.length, 'items');
+        console.log(
+          "Setting search results from object:",
+          resultsArray.length,
+          "items"
+        );
         setSearchResults(resultsArray);
       } else {
-        console.log('No valid search results found');
+        console.log("No valid search results found");
         setSearchResults([]);
       }
     } catch (error) {
-      console.error('Error searching patients:', error);
+      console.error("Error searching patients:", error);
       setSearchError(`Failed to search patients: ${error.message}`);
       setSearchResults([]);
     } finally {
@@ -172,7 +184,7 @@ const Dashboard = () => {
   // Handle patient card click
   const handlePatientClick = (patient) => {
     // Navigate to patient details page with patient data
-    navigate('/patient-details', { state: { patientData: patient } });
+    navigate("/patient-details", { state: { patientData: patient } });
   };
 
   // Doctor-specific cards definition
@@ -196,10 +208,17 @@ const Dashboard = () => {
     },
     {
       id: 3,
-      title: "MEDICAL SESSIONS",
+      title: "ADD MEDICAL SESSIONS",
       icon: sessionsIcon,
-      link: "/sessions",
+      link: "/sessions/add", // Directly go to add form
       className: "sessions",
+    },
+    {
+      id: 4,
+      title: "ALLERGIES",
+      icon: radiologyIcon, // Use an existing icon for now
+      link: "/allergies",
+      className: "allergies",
     },
   ];
 
@@ -218,7 +237,7 @@ const Dashboard = () => {
       </div>
     );
   }
-  
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -250,7 +269,7 @@ const Dashboard = () => {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="patient-search-input"
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               />
               <button
                 onClick={handleSearch}
@@ -258,53 +277,68 @@ const Dashboard = () => {
                 className="search-button"
               >
                 {isSearching ? (
-                  <div className="spinner-border spinner-border-sm" role="status">
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
                     <span className="visually-hidden">Searching...</span>
                   </div>
                 ) : (
-                  'Search'
+                  "Search"
                 )}
               </button>
             </div>
-            
+
             {searchError && (
-              <div className="alert alert-danger mt-3">
-                {searchError}
-              </div>
+              <div className="alert alert-danger mt-3">{searchError}</div>
             )}
-            
+
             {searchResults.length > 0 && (
               <div className="search-results-container">
                 <div className="search-results-card">
                   <h3 className="search-results-title">Search Results</h3>
                   <div className="patient-cards-grid">
                     {/* Filter to only include patients (users with specializationId === null) */}
-                    {searchResults.filter(user => user.specializationId === null).map((patient) => (
-                      <div
-                        key={patient.id}
-                        className="modern-patient-card"
-                        onClick={() => handlePatientClick(patient)}
-                      >
-                        <div className="modern-patient-avatar">
-                          <img
-                            src={patient.profileImage || patientAvatar}
-                            alt={patient.userName || 'Patient'}
-                            className="modern-patient-image"
-                          />
+                    {searchResults
+                      .filter((user) => user.specializationId === null)
+                      .map((patient) => (
+                        <div
+                          key={patient.id}
+                          className="modern-patient-card"
+                          onClick={() => handlePatientClick(patient)}
+                        >
+                          <div className="modern-patient-avatar">
+                            <img
+                              src={patient.profileImage || patientAvatar}
+                              alt={patient.userName || "Patient"}
+                              className="modern-patient-image"
+                            />
+                          </div>
+                          <div className="modern-patient-info">
+                            <h4 className="modern-patient-name">
+                              {patient.fullName ||
+                                patient.userName ||
+                                "Unknown Patient"}
+                            </h4>
+                            <p className="modern-patient-email">
+                              {patient.email || "No email provided"}
+                            </p>
+                            <p className="modern-patient-age">
+                              {patient.age
+                                ? `${patient.age} years old`
+                                : "Age not available"}
+                            </p>
+                            <p className="patient-phone">
+                              {patient.phoneNumber || "No phone number"}
+                            </p>
+                          </div>
                         </div>
-                        <div className="modern-patient-info">
-                          <h4 className="modern-patient-name">{patient.fullName || patient.userName || 'Unknown Patient'}</h4>
-                          <p className="modern-patient-email">{patient.email || 'No email provided'}</p>
-                          <p className="modern-patient-age">{patient.age ? `${patient.age} years old` : 'Age not available'}</p>
-                          <p className="patient-phone">{patient.phoneNumber || 'No phone number'}</p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </div>
             )}
-            
+
             {searchQuery && searchResults.length === 0 && !isSearching && (
               <div className="no-results">
                 <p>No patients found with the name "{searchQuery}"</p>
@@ -312,7 +346,7 @@ const Dashboard = () => {
             )}
           </div>
         </DoctorOnly>
-        
+
         {/* Patient-specific view */}
         <PatientOnly>
           <div className="cards-container">
