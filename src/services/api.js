@@ -37,26 +37,49 @@ const api = {
     try {
       const response = await fetch(url, config);
 
-      // Handle non-JSON responses
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
+      // Handle responses based on content type
+      const contentType = response.headers.get("content-type") || "";
+      
+      // Handle JSON or problem+json responses
+      if (contentType.includes("application/json") || contentType.includes("application/problem+json")) {
+        try {
+          const data = await response.json();
 
-        if (!response.ok) {
+          if (!response.ok) {
+            // Handle RFC9110 problem+json format
+            if (data.type && data.title) {
+              throw {
+                status: response.status,
+                data,
+                message: data.title || data.detail || "API request failed",
+              };
+            } else {
+              throw {
+                status: response.status,
+                data,
+                message: data.message || "API request failed",
+              };
+            }
+          }
+
+          return data;
+        } catch (parseError) {
+          // Handle JSON parse errors
+          console.error("Error parsing JSON response:", parseError);
+          const text = await response.text().catch(() => "Unable to read response");
           throw {
             status: response.status,
-            data,
-            message: data.message || "API request failed",
+            message: "Invalid JSON response format",
+            data: text,
+            originalError: parseError
           };
         }
-
-        return data;
       } else {
         // Handle non-JSON response (like HTML)
-        const text = await response.text();
+        const text = await response.text().catch(() => "Unable to read response");
         throw {
           status: response.status,
-          message: "Invalid response format (expected JSON)",
+          message: `Unexpected response format: ${contentType || "unknown"} (expected JSON)`,
           data: text,
         };
       }
@@ -97,6 +120,21 @@ const api = {
     getAllergies: async (patientId) => {
       return api.request(`/api/Allergens?patientId=${patientId}`, {
         method: "GET",
+      });
+    },
+    
+    addAllergy: async (data) => {
+      // Ensure the data has the correct field names expected by the API
+      const payload = {
+        patientId: data.patientId, // Use lowercase 'patientId' based on API response format
+        name: data.allergenName || data.name // Support both field names
+      };
+      
+      console.log('Sending allergy data:', payload);
+      
+      return api.request('/api/Allergens', {
+        method: "POST",
+        body: JSON.stringify(payload),
       });
     },
   },

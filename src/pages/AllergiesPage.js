@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import "../pages/pagesStyles/PatientDetails.css";
 
 const API_URL = "http://motab3aa.runasp.net/api/Allergens";
 
@@ -49,68 +50,173 @@ const AllergiesPage = () => {
     }
   };
 
+  const [showPopup, setShowPopup] = useState(false);
+
   return (
-    <div
-      style={{
-        maxWidth: 500,
-        margin: "40px auto",
-        padding: 20,
-        background: "#fff",
-        borderRadius: 12,
-        boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
-      }}
-    >
-      <h2 style={{ color: "#2e99dc", marginBottom: 18 }}>Allergies</h2>
-      {loading ? (
-        <div>Loading...</div>
-      ) : error ? (
-        <div style={{ color: "#c00" }}>{error}</div>
-      ) : (
-        <ul style={{ padding: 0, listStyle: "none", marginBottom: 18 }}>
-          {allergies.length === 0 ? (
-            <li style={{ color: "#888" }}>No allergies found.</li>
+    <div className="patient-details-content" style={{ padding: 32 }}>
+      <div className="patient-info-grid">
+        <div className="info-section">
+          <h2 className="patient-title">Allergies</h2>
+          {loading ? (
+            <div className="loading-indicator">Loading...</div>
+          ) : error ? (
+            <div style={{ color: "#c00", marginBottom: 16 }}>{error}</div>
           ) : (
-            allergies.map((a) => (
-              <li
-                key={a.id}
-                style={{ padding: "6px 0", borderBottom: "1px solid #eee" }}
+            <>
+              <h3 className="section-title">Current Allergies</h3>
+              {allergies.length === 0 ? (
+                <div style={{ color: "#666", fontStyle: "italic", padding: "10px 0" }}>No allergies found.</div>
+              ) : (
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {allergies.map((a) => (
+                    <li
+                      key={a.id}
+                      style={{ 
+                        padding: "15px 20px", 
+                        margin: "12px 0", 
+                        backgroundColor: "white", 
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
+                        border: "1px solid #e0e0e0",
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        display: "flex",
+                        alignItems: "center"
+                      }}
+                    >
+                      <div style={{
+                        width: "8px",
+                        height: "8px",
+                        backgroundColor: "#2e99dc",
+                        borderRadius: "50%",
+                        marginRight: "12px"
+                      }}></div>
+                      <strong style={{ 
+                        color: "#333", 
+                        fontSize: "1.05em",
+                        fontWeight: "500"
+                      }}>{a.name}</strong>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              
+              <button 
+                onClick={() => setShowPopup(true)} 
+                className="action-btn primary"
+                style={{ 
+                  marginTop: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
               >
-                {a.name}
-              </li>
-            ))
+                <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>+</span> Add New Allergy
+              </button>
+            </>
           )}
-        </ul>
-      )}
-      <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-        <input
-          type="text"
-          value={newAllergy}
-          onChange={(e) => setNewAllergy(e.target.value)}
-          placeholder="Add new allergy..."
-          style={{
-            flex: 1,
-            padding: 8,
-            borderRadius: 6,
-            border: "1px solid #ccc",
-          }}
-          disabled={adding}
-        />
-        <button
-          onClick={handleAddAllergy}
-          disabled={adding || !newAllergy.trim()}
-          style={{
-            background: "#2e99dc",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "8px 18px",
-            fontWeight: 600,
-            cursor: adding ? "not-allowed" : "pointer",
-          }}
-        >
-          {adding ? "Adding..." : "Add"}
-        </button>
+        </div>
       </div>
+
+      {/* Modal Popup for Adding Allergy */}
+      {showPopup && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "24px",
+            width: "90%",
+            maxWidth: "500px",
+            boxShadow: "0 5px 15px rgba(0,0,0,0.2)"
+          }}>
+            <h3 style={{ marginTop: 0, color: "#2e99dc", borderBottom: "1px solid #eee", paddingBottom: "10px" }}>
+              Add New Allergy
+            </h3>
+            
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontWeight: "500" }}>
+                Allergy Name:
+              </label>
+              <input
+                type="text"
+                value={newAllergy}
+                onChange={(e) => setNewAllergy(e.target.value)}
+                placeholder="Enter allergy name..."
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "6px",
+                  border: "1px solid #ddd",
+                  fontSize: "16px"
+                }}
+                disabled={adding}
+              />
+            </div>
+            
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+              <button 
+                type="button" 
+                onClick={() => setShowPopup(false)}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: "6px",
+                  border: "1px solid #ddd",
+                  backgroundColor: "#f5f5f5",
+                  cursor: "pointer",
+                  fontWeight: "500"
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  handleAddAllergy();
+                  if (newAllergy.trim()) {
+                    setShowPopup(false);
+                  }
+                }}
+                disabled={adding || !newAllergy.trim()}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: "#2e99dc",
+                  color: "white",
+                  cursor: adding || !newAllergy.trim() ? "not-allowed" : "pointer",
+                  fontWeight: "600",
+                  opacity: adding || !newAllergy.trim() ? 0.7 : 1
+                }}
+              >
+                {adding ? "Adding..." : "Add Allergy"}
+              </button>
+            </div>
+            
+            {error && (
+              <div style={{ 
+                marginTop: "16px", 
+                padding: "10px", 
+                borderRadius: "6px", 
+                backgroundColor: "#ffebeb",
+                color: "#d32f2f",
+                textAlign: "center"
+              }}>
+                {error}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

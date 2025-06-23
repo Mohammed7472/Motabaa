@@ -20,6 +20,8 @@ import LabReportDetails from "./pages/LabReportDetails";
 import PatientDetails from "./pages/PatientDetails";
 import Services from "./pages/Services";
 import AllergiesPage from "./pages/AllergiesPage";
+import PatientAllergies from "./pages/PatientAllergies";
+import ChronicDiseases from "./pages/ChronicDiseases";
 import { UserProvider } from "./context/UserContext";
 
 function App() {
@@ -51,6 +53,8 @@ function App() {
             <Route path="/radiology-labs/add" element={<AddRadiologyLab />} />
             <Route path="/allergies" element={<AllergiesPage />} />
             <Route path="/patient-details" element={<PatientDetails />} />
+            <Route path="/patient-allergies" element={<PatientAllergies />} />
+            <Route path="/chronic-diseases" element={<ChronicDiseases />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
