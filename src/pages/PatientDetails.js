@@ -157,7 +157,18 @@ const PatientDetails = () => {
             >
               Chronic Diseases
             </button>
-            <button className="action-btn secondary">
+            <button
+              className="action-btn secondary"
+              onClick={() =>
+                navigate("/medical-tests", {
+                  state: {
+                    patientId: patientData.id,
+                    patientName: patientData.fullName || patientData.userName,
+                    patientData: patientData
+                  },
+                })
+              }
+            >
               Radiology and Laboratory Tests
             </button>
             <button

@@ -1,0 +1,14 @@
+// Add this to your services configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("GithubPagesPolicy", policy =>
+    {
+        policy.WithOrigins("https://mohammed7472.github.io")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
+
+// Add this before app.UseAuthorization() but after app.UseRouting()
+app.UseCors("GithubPagesPolicy");

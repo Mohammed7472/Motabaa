@@ -65,7 +65,7 @@ const PatientAllergies = () => {
     try {
       // Use the api service to add the allergy
       await api.patient.addAllergy({
-        allergenName: form.allergyName,
+        name: form.allergyName,  
         patientId: patientId,
         patientName: patientName
       });
@@ -120,7 +120,7 @@ const PatientAllergies = () => {
     try {
       // Call the API to delete the allergy
       // Include both the allergy ID and patient ID as required by the API
-      const endpoint = `/api/Allergens?id=${allergyId}&patientid=${encodeURIComponent(patientId)}`;
+      const endpoint = `/api/Allergens?id=${allergyId}&patientId=${encodeURIComponent(patientId)}`;
       console.log("Deleting allergy with ID:", allergyId, "for patient ID:", patientId);
       
       const response = await fetch(endpoint, {

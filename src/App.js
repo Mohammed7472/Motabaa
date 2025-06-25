@@ -22,6 +22,7 @@ import Services from "./pages/Services";
 import AllergiesPage from "./pages/AllergiesPage";
 import PatientAllergies from "./pages/PatientAllergies";
 import ChronicDiseases from "./pages/ChronicDiseases";
+import MedicalTests from "./pages/MedicalTests";
 import { UserProvider } from "./context/UserContext";
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
             <Route path="/patient-details" element={<PatientDetails />} />
             <Route path="/patient-allergies" element={<PatientAllergies />} />
             <Route path="/chronic-diseases" element={<ChronicDiseases />} />
+            <Route path="/medical-tests" element={<MedicalTests />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

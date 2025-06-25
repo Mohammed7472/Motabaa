@@ -32,7 +32,7 @@ const ChronicDiseases = () => {
     console.log("Patient ID type:", typeof patientId);
     
     // Use relative URL with the proxy setup
-    const endpoint = `/api/ChronicDiseases?Patientid=${encodeURIComponent(patientId)}`;
+    const endpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
     console.log("API endpoint being called:", endpoint);
     
     // Use fetch with authentication token
@@ -149,7 +149,7 @@ const ChronicDiseases = () => {
       
       // Refresh diseases list with improved error handling
       console.log("Refreshing diseases list for patient ID:", patientId);
-      const refreshEndpoint = `/api/ChronicDiseases?Patientid=${encodeURIComponent(patientId)}`;
+      const refreshEndpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
       console.log("Refresh endpoint:", refreshEndpoint);
       
       const updatedResponse = await fetch(refreshEndpoint, {
@@ -205,7 +205,7 @@ const ChronicDiseases = () => {
     try {
       // Call the API to delete the chronic disease
       // Include both the disease ID and patient ID as required by the API
-      const endpoint = `/api/ChronicDiseases?id=${diseaseId}&patientid=${encodeURIComponent(patientId)}`;
+      const endpoint = `/api/ChronicDiseases?id=${diseaseId}&patientId=${encodeURIComponent(patientId)}`;
       console.log("Deleting chronic disease with ID:", diseaseId, "for patient ID:", patientId);
       
       const response = await fetch(endpoint, {
@@ -225,7 +225,7 @@ const ChronicDiseases = () => {
       
       // Refresh the diseases list after successful deletion
       console.log("Refreshing diseases list after deletion");
-      const refreshEndpoint = `/api/ChronicDiseases?Patientid=${encodeURIComponent(patientId)}`;
+      const refreshEndpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
       
       const updatedResponse = await fetch(refreshEndpoint, {
         headers: {

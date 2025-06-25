@@ -2,14 +2,17 @@
 // In development: Uses REACT_APP_API_URL from .env or defaults to empty string (relative to current domain)
 // In production: Uses REACT_APP_API_URL from .env.production or defaults to your production API URL
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL ||
-  (process.env.NODE_ENV === "production"
-    ? "https://your-backend-domain.com"
-    : "");
+  process.env.REACT_APP_API_URL || "http://motab3aa.runasp.net";
 
 const api = {
   /**
    * Make an API request with proper error handling
+   * @param {string} endpoint - The API endpoint (starting with /)
+   * @param {Object} options - Fetch options
+   * @returns {Promise<any>} - The response data
+   */
+  /**
+   * Make an API request with enhanced error handling for various response formats
    * @param {string} endpoint - The API endpoint (starting with /)
    * @param {Object} options - Fetch options
    * @returns {Promise<any>} - The response data
@@ -36,56 +39,99 @@ const api = {
 
     try {
       const response = await fetch(url, config);
-
-      // Handle responses based on content type
       const contentType = response.headers.get("content-type") || "";
       
-      // Handle JSON or problem+json responses
-      if (contentType.includes("application/json") || contentType.includes("application/problem+json")) {
+      // First, try to get the response text to avoid losing it if JSON parsing fails
+      let responseText = "";
+      try {
+        responseText = await response.clone().text();
+      } catch (textError) {
+        console.warn("Could not read response text:", textError);
+        responseText = "Unable to read response";
+      }
+      
+      // Attempt to parse as JSON regardless of content type
+      let data = null;
+      let parseError = null;
+      
+      if (responseText && responseText.trim()) {
         try {
-          const data = await response.json();
-
-          if (!response.ok) {
-            // Handle RFC9110 problem+json format
-            if (data.type && data.title) {
-              throw {
-                status: response.status,
-                data,
-                message: data.title || data.detail || "API request failed",
-              };
-            } else {
-              throw {
-                status: response.status,
-                data,
-                message: data.message || "API request failed",
-              };
-            }
-          }
-
+          data = JSON.parse(responseText);
+        } catch (err) {
+          parseError = err;
+          // Don't throw here - we'll handle this gracefully below
+        }
+      }
+      
+      // Handle successful responses
+      if (response.ok) {
+        // If we successfully parsed JSON, return it
+        if (data !== null) {
           return data;
-        } catch (parseError) {
-          // Handle JSON parse errors
-          console.error("Error parsing JSON response:", parseError);
-          const text = await response.text().catch(() => "Unable to read response");
+        }
+        
+        // If not JSON but response is OK, return the text or an empty object
+        return responseText || {};
+      }
+      
+      // Handle error responses
+      // Case 1: We have valid JSON error data
+      if (data !== null) {
+        // Handle RFC9110 problem+json format
+        if (data.type && (data.title || data.detail)) {
           throw {
             status: response.status,
-            message: "Invalid JSON response format",
-            data: text,
-            originalError: parseError
+            data,
+            message: data.title || data.detail || "API request failed",
+            validationErrors: data.errors || null,
+            type: data.type,
+            isValidationError: response.status === 400 && data.errors,
+            originalText: responseText
+          };
+        } 
+        // Handle standard API error responses
+        else if (data.message || data.error || data.errors) {
+          throw {
+            status: response.status,
+            data,
+            message: data.message || data.error || "API request failed",
+            validationErrors: data.errors || null,
+            isValidationError: response.status === 400 && data.errors,
+            originalText: responseText
           };
         }
-      } else {
-        // Handle non-JSON response (like HTML)
-        const text = await response.text().catch(() => "Unable to read response");
-        throw {
-          status: response.status,
-          message: `Unexpected response format: ${contentType || "unknown"} (expected JSON)`,
-          data: text,
-        };
+        // Any other JSON error format
+        else {
+          throw {
+            status: response.status,
+            data,
+            message: "API request failed with status " + response.status,
+            originalText: responseText
+          };
+        }
       }
+      
+      // Case 2: We couldn't parse JSON but have a response
+      throw {
+        status: response.status,
+        message: `Request failed with status ${response.status}`,
+        data: responseText,
+        contentType,
+        parseError: parseError ? parseError.message : null
+      };
     } catch (error) {
+      // If this is already our formatted error, just rethrow it
+      if (error.status) {
+        throw error;
+      }
+      
+      // Handle network errors or other exceptions
       console.error("API request failed:", error);
-      throw error;
+      throw {
+        status: 0,
+        message: error.message || "Network error or request failed",
+        originalError: error
+      };
     }
   },
 
@@ -123,20 +169,26 @@ const api = {
       });
     },
     
-    addAllergy: async (data) => {
-      // Ensure the data has the correct field names expected by the API
-      const payload = {
-        patientId: data.patientId, // Use lowercase 'patientId' based on API response format
-        name: data.allergenName || data.name // Support both field names
-      };
-      
-      console.log('Sending allergy data:', payload);
-      
-      return api.request('/api/Allergens', {
-        method: "POST",
-        body: JSON.stringify(payload),
+    getMedicalTests: async (patientId) => {
+      return api.request(`/api/MedicalTest?Patientid=${patientId}`, {
+        method: "GET",
       });
     },
+    
+  addAllergy: async (data) => {
+  const payload = {
+    patientId: data.patientId,
+    name: data.allergenName || data.name,
+    patientName: data.patientName 
+  };
+
+  console.log('Sending allergy data:', payload);
+
+  return api.request('/api/Allergens', {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
   },
 
   // Specialization endpoints
