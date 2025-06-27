@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
+  const [hasSearched, setHasSearched] = useState(false); // Track if search has been performed
 
   // Handle logout
   const handleLogout = () => {
@@ -103,6 +104,9 @@ const Dashboard = () => {
       return;
     }
 
+    // Set flag to indicate a search has been performed
+    setHasSearched(true);
+    
     setIsSearching(true);
     setSearchError("");
 
@@ -151,22 +155,17 @@ const Dashboard = () => {
       const data = await response.json();
       console.log("Search results:", data);
 
-      if (Array.isArray(data)) {
-        setSearchResults(data);
-        console.log("Setting search results:", data.length, "items");
-      } else if (data && typeof data === "object") {
-        // Handle case where API returns an object with results array
-        const resultsArray = data.results || data.data || [data];
-        console.log(
-          "Setting search results from object:",
-          resultsArray.length,
-          "items"
-        );
-        setSearchResults(resultsArray);
-      } else {
-        console.log("No valid search results found");
-        setSearchResults([]);
-      }
+      // Filter and process the data to only include patients
+      const processData = (rawData) => {
+        const dataArray = Array.isArray(rawData) ? rawData : rawData?.results || rawData?.data || [rawData];
+        // Filter out doctors (users with specializationId)
+        const patientsOnly = dataArray.filter(user => user.specializationId === null);
+        return patientsOnly;
+      };
+
+      const filteredResults = processData(data);
+      setSearchResults(filteredResults);
+      console.log("Setting filtered patient results:", filteredResults.length, "items");
     } catch (error) {
       console.error("Error searching patients:", error);
       setSearchError(`Failed to search patients: ${error.message}`);
@@ -179,6 +178,9 @@ const Dashboard = () => {
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    // Do not reset hasSearched flag here to avoid showing "no results" message
+    // while typing after a search has been performed
+    // Only search when button is clicked or Enter is pressed
   };
 
   // Handle patient card click
@@ -298,48 +300,61 @@ const Dashboard = () => {
                 <div className="search-results-card">
                   <h3 className="search-results-title">Search Results</h3>
                   <div className="patient-cards-grid">
-                    {/* Filter to only include patients (users with specializationId === null) */}
-                    {searchResults
-                      .filter((user) => user.specializationId === null)
-                      .map((patient) => (
+                    {/* Display both patients and doctors with different handling */}
+                    {searchResults.map((user) => {
+                      const isDoctor = user.specializationId !== null;
+                      return (
                         <div
-                          key={patient.id}
-                          className="modern-patient-card"
-                          onClick={() => handlePatientClick(patient)}
+                          key={user.id}
+                          className={`modern-patient-card ${isDoctor ? 'doctor-card' : ''}`}
+                          onClick={() => {
+                            if (isDoctor) {
+                              // Navigate to doctor details page
+                              navigate("/doctor-details", { state: { doctorData: user } });
+                            } else {
+                              // Navigate to patient details page
+                              handlePatientClick(user);
+                            }
+                          }}
                         >
                           <div className="modern-patient-avatar">
                             <img
-                              src={patient.profileImage || patientAvatar}
-                              alt={patient.userName || "Patient"}
+                              src={user.profileImage || (isDoctor ? doctorAvatar : patientAvatar)}
+                              alt={user.userName || (isDoctor ? "Doctor" : "Patient")}
                               className="modern-patient-image"
                             />
                           </div>
                           <div className="modern-patient-info">
                             <h4 className="modern-patient-name">
-                              {patient.fullName ||
-                                patient.userName ||
-                                "Unknown Patient"}
+                              {isDoctor ? `Dr. ${user.fullName || user.userName || "Unknown Doctor"}` : 
+                                (user.fullName || user.userName || "Unknown Patient")}
                             </h4>
                             <p className="modern-patient-email">
-                              {patient.email || "No email provided"}
+                              {user.email || "No email provided"}
                             </p>
-                            <p className="modern-patient-age">
-                              {patient.age
-                                ? `${patient.age} years old`
-                                : "Age not available"}
-                            </p>
+                            {isDoctor ? (
+                              <p className="modern-patient-specialization">
+                                {user.specialization || "Specialist"}
+                              </p>
+                            ) : (
+                              <p className="modern-patient-age">
+                                {user.age ? `${user.age} years old` : "Age not available"}
+                              </p>
+                            )}
                             <p className="patient-phone">
-                              {patient.phoneNumber || "No phone number"}
+                              {user.phoneNumber || "No phone number"}
                             </p>
                           </div>
                         </div>
-                      ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
             )}
 
-            {searchQuery && searchResults.length === 0 && !isSearching && (
+            {/* Only show no results message after a search has been performed */}
+            {searchQuery && searchResults.length === 0 && !isSearching && hasSearched && (
               <div className="no-results">
                 <p>No patients found with the name "{searchQuery}"</p>
               </div>

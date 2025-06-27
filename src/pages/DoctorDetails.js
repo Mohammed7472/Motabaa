@@ -7,11 +7,11 @@ import doctorAvatar from "../images/Doctor 1.png";
 import "./pagesStyles/PatientDetails.css";
 import "./pagesStyles/CommonStyles.css";
 
-const PatientDetails = () => {
+const DoctorDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { userData, isDoctor, logoutUser } = useUser();
-  const patientData = location.state?.patientData;
+  const doctorData = location.state?.doctorData;
 
   // Handle logout
   const handleLogout = () => {
@@ -19,14 +19,14 @@ const PatientDetails = () => {
     navigate("/login");
   };
 
-  // Redirect to dashboard if no patient data
+  // Redirect to dashboard if no doctor data
   useEffect(() => {
-    if (!patientData) {
+    if (!doctorData) {
       navigate("/dashboard");
     }
-  }, [patientData, navigate]);
+  }, [doctorData, navigate]);
 
-  if (!patientData) {
+  if (!doctorData) {
     return null;
   }
 
@@ -45,10 +45,10 @@ const PatientDetails = () => {
       <div className="patient-details-content">
         <div className="common-back-button-container">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate(-1)}
             className="common-back-button"
           >
-            <span className="common-back-arrow">←</span> Back to Dashboard
+            <span className="common-back-arrow">←</span> Back
           </button>
         </div>
 
@@ -56,21 +56,17 @@ const PatientDetails = () => {
           <div className="patient-header">
             <div className="patient-avatar-large">
               <img
-                src={patientData.profileImage || patientAvatar}
-                alt={patientData.userName || patientData.fullName || "Patient"}
+                src={doctorData.profileImage || doctorAvatar}
+                alt={doctorData.userName || doctorData.fullName || "Doctor"}
                 className="patient-image-large"
               />
             </div>
             <div className="patient-header-info">
               <h1 className="patient-title">
-                {patientData.fullName || patientData.userName || "Unknown"}
+                Dr. {doctorData.fullName || doctorData.userName || "Unknown"}
               </h1>
               <p className="patient-subtitle">
-                {patientData.applicationUserType === 0
-                  ? "Male"
-                  : patientData.applicationUserType === 1
-                  ? "Female"
-                  : "Not specified"}
+                {doctorData.specialization || "Specialist"}
               </p>
             </div>
           </div>
@@ -82,46 +78,48 @@ const PatientDetails = () => {
                 <div className="info-item">
                   <span className="info-label">Full Name:</span>
                   <span className="info-value">
-                    {patientData.fullName || patientData.userName || "Unknown"}
+                    {doctorData.fullName || doctorData.userName || "Unknown"}
                   </span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Email:</span>
-                  <span className="info-value">{patientData.email || "-"}</span>
+                  <span className="info-value">{doctorData.email || "-"}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Phone Number:</span>
                   <span className="info-value">
-                    {patientData.phoneNumber || "-"}
-                  </span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Age:</span>
-                  <span className="info-value">
-                    {patientData.age ? `${patientData.age} years` : "-"}
-                  </span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Address:</span>
-                  <span className="info-value">
-                    {patientData.address || "-"}
+                    {doctorData.phoneNumber || "-"}
                   </span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Gender:</span>
                   <span className="info-value">
-                    {patientData.applicationUserType === 0
+                    {doctorData.applicationUserType === 0
                       ? "Male"
-                      : patientData.applicationUserType === 1
+                      : doctorData.applicationUserType === 1
                       ? "Female"
                       : "Not specified"}
                   </span>
                 </div>
-                {patientData.specializationId && (
+                <div className="info-item">
+                  <span className="info-label">Address:</span>
+                  <span className="info-value">
+                    {doctorData.address || "-"}
+                  </span>
+                </div>
+                {doctorData.specialization && (
+                  <div className="info-item">
+                    <span className="info-label">Specialization:</span>
+                    <span className="info-value">
+                      {doctorData.specialization}
+                    </span>
+                  </div>
+                )}
+                {doctorData.specializationId && (
                   <div className="info-item">
                     <span className="info-label">Specialization ID:</span>
                     <span className="info-value">
-                      {patientData.specializationId}
+                      {doctorData.specializationId}
                     </span>
                   </div>
                 )}
@@ -133,7 +131,7 @@ const PatientDetails = () => {
               <div className="info-grid">
                 <div className="info-item">
                   <span className="info-label">User ID:</span>
-                  <span className="info-value">{patientData.id || "-"}</span>
+                  <span className="info-value">{doctorData.id || "-"}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Account Status:</span>
@@ -149,8 +147,8 @@ const PatientDetails = () => {
               onClick={() =>
                 navigate("/medical-history", {
                   state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
+                    patientId: userData.id,
+                    patientName: userData.fullName || userData.userName,
                   },
                 })
               }
@@ -160,42 +158,16 @@ const PatientDetails = () => {
             <button
               className="action-btn secondary"
               onClick={() =>
-                navigate("/chronic-diseases", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                  },
-                })
-              }
-            >
-              Chronic Diseases
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
                 navigate("/medical-tests", {
                   state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                    patientData: patientData
+                    patientId: userData.id,
+                    patientName: userData.fullName || userData.userName,
+                    patientData: userData
                   },
                 })
               }
             >
               Radiology and Laboratory Tests
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
-                navigate("/patient-allergies", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                  },
-                })
-              }
-            >
-              Allergies
             </button>
           </div>
         </div>
@@ -204,4 +176,4 @@ const PatientDetails = () => {
   );
 };
 
-export default PatientDetails;
+export default DoctorDetails;

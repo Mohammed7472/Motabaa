@@ -7,6 +7,7 @@ import doctorAvatar from "../images/Doctor 1.png";
 import api from "../services/api";
 import "./pagesStyles/PatientDetails.css";
 import "./pagesStyles/MedicalTests.css";
+import "./pagesStyles/CommonStyles.css";
 
 const MedicalTests = () => {
   const location = useLocation();
@@ -93,7 +94,7 @@ const MedicalTests = () => {
       imageUrl = `http://motab3aa.runasp.net/images/tests/${test.medicalTestImg}`;
     } else {
       // Fallback for any other test types
-      imageUrl = `http://motab3aa.runasp.net/images/tests/${test.medicalTestImg}`;
+      imageUrl = `http://motab3aa.runasp.net/images/medical/${test.medicalTestImg}`;
     }
     
     console.log(`Opening modal for ${test.type} test with URL:`, imageUrl);
@@ -115,7 +116,7 @@ const MedicalTests = () => {
   return (
     <div className="patient-details-container">
       <PatientNavbar
-        patientName={userData?.fullName || userData?.userName}
+        patientName={isDoctor() ? `Dr. ${userData?.fullName || userData?.userName}` : (userData?.fullName || userData?.userName)}
         patientImage={
           userData?.profileImage || (isDoctor() ? doctorAvatar : patientAvatar)
         }
@@ -125,12 +126,12 @@ const MedicalTests = () => {
       />
 
       <div className="patient-details-content">
-        <div className="back-button-container">
+        <div className="common-back-button-container">
           <button
             onClick={() => navigate("/patient-details", { state: { patientData: location.state?.patientData } })}
-            className="back-button"
+            className="common-back-button"
           >
-            ← Back to Patient Details
+            <span className="common-back-arrow">←</span> Back to Patient Details
           </button>
         </div>
 
@@ -243,18 +244,13 @@ const MedicalTests = () => {
                 <div className="tests-grid">
                   {filteredTests.map((test) => {
                     // Construct the full image URL from the API data based on test type
-                    let imageUrl = null;
-                    if (test.medicalTestImg) {
-                      // Different path construction based on test type
-                      if (test.type === "Laboratory") {
-                        imageUrl = `http://motab3aa.runasp.net/images/laboratory/${test.medicalTestImg}`;
-                      } else if (test.type === "Radiology") {
-                        imageUrl = `http://motab3aa.runasp.net/images/tests/${test.medicalTestImg}`;
-                      } else {
-                        // Fallback for any other type
-                        imageUrl = `http://motab3aa.runasp.net/images/tests/${test.medicalTestImg}`;
-                      }
-                      console.log(`Image URL for ${test.type} test:`, imageUrl);
+                    let imageUrl;
+                    if (test.type === "Laboratory") {
+                      imageUrl = `http://motab3aa.runasp.net/images/laboratory/${test.medicalTestImg}`;
+                    } else if (test.type === "Radiology") {
+                      imageUrl = `http://motab3aa.runasp.net/images/tests/${test.medicalTestImg}`;
+                    } else {
+                      imageUrl = `http://motab3aa.runasp.net/images/medical/${test.medicalTestImg}`;
                     }
                     
                     return (
@@ -334,13 +330,26 @@ const MedicalTests = () => {
                                 }}
                                 onError={(e) => {
                                   console.log(`Image failed to load for ${test.type} test:`, imageUrl);
-                                  // Try alternative URL format if the first one fails
-                                  if (test.type === "Laboratory" && e.target.src.includes('/images/laboratory/')) {
-                                    e.target.src = imageUrl.replace('/images/laboratory/', '/images/tests/');
-                                  } else if (test.type === "Radiology" && e.target.src.includes('/images/tests/')) {
-                                    e.target.src = imageUrl.replace('/images/tests/', '/images/laboratory/');
+                                  const currentSrc = e.target.src;
+                                  const paths = [
+                                    '/images/laboratory/',
+                                    '/images/tests/',
+                                    '/images/medical/',
+                                    '/Images/laboratory/',
+                                    '/Images/tests/',
+                                    '/Images/medical/'
+                                  ];
+                                  
+                                  // Find current path
+                                  const currentPath = paths.find(path => currentSrc.includes(path));
+                                  const currentIndex = paths.indexOf(currentPath);
+                                  
+                                  // Try next path if available
+                                  if (currentIndex < paths.length - 1) {
+                                    const nextPath = paths[currentIndex + 1];
+                                    e.target.src = `http://motab3aa.runasp.net${nextPath}${test.medicalTestImg}`;
                                   } else {
-                                    // If all attempts fail, show a placeholder
+                                    // If all paths tried, show placeholder
                                     e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22286%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20286%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17a3f93519d%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3A-apple-system%2CBlinkMacSystemFont%2C%26quot%3BSegoe%20UI%26quot%3B%2CRoboto%2C%26quot%3BHelvetica%20Neue%26quot%3B%2CArial%2C%26quot%3BNoto%20Sans%26quot%3B%2Csans-serif%2C%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%26quot%3BSegoe%20UI%20Symbol%26quot%3B%2C%26quot%3BNoto%20Color%20Emoji%26quot%3B%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17a3f93519d%22%3E%3Crect%20width%3D%22286%22%20height%3D%22180%22%20fill%3D%22%23f0f0f0%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2296.5%22%20y%3D%2296.3%22%3EImage%20Not%20Available%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E';
                                     e.target.alt = 'Image not available';
                                   }
@@ -357,9 +366,8 @@ const MedicalTests = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 opacity: 0,
-                                transition: 'opacity 0.3s',
-                                ':hover': { opacity: 1 }
-                              }}>
+                                transition: 'opacity 0.3s'
+                              }} onMouseOver={(e) => e.currentTarget.style.opacity = 1} onMouseOut={(e) => e.currentTarget.style.opacity = 0}>
                                 <span style={{
                                   color: 'white',
                                   fontWeight: '600',

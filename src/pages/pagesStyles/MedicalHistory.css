@@ -1,0 +1,231 @@
+/* Medical History Page Styles */
+
+/* Card Modifications */
+.medical-history-card {
+  padding: 24px 28px;
+}
+
+.medical-history-title {
+  color: #2e99dc;
+  font-size: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 16px;
+}
+
+/* Filters and Search */
+.medical-history-filters {
+  margin-bottom: 24px;
+}
+
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #2e99dc;
+}
+
+.date-filter {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.date-filter:focus {
+  border-color: #2e99dc;
+}
+
+.clear-filters-btn {
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.clear-filters-btn:hover {
+  background-color: #e5e5e5;
+}
+
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(46, 153, 220, 0.2);
+  border-radius: 50%;
+  border-top-color: #2e99dc;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #ffebee;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.retry-btn {
+  padding: 10px 20px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+  background-color: #b71c1c;
+}
+
+/* Prescriptions List */
+.prescriptions-container {
+  margin-top: 16px;
+}
+
+.no-results {
+  padding: 32px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+  font-style: italic;
+}
+
+.prescriptions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.prescription-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #e0e0e0;
+}
+
+.prescription-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.prescription-header {
+  padding: 16px 20px;
+  background-color: #f5f9ff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prescription-title {
+  margin: 0;
+  font-size: 18px;
+  color: #2e99dc;
+  font-weight: 600;
+}
+
+.prescription-date {
+  font-size: 14px;
+  color: #666;
+}
+
+.prescription-content {
+  padding: 20px;
+}
+
+.prescription-text {
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.prescription-specialization {
+  margin: 10px 0 0 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.prescription-image-container {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.prescription-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.prescription-image:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .prescriptions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-container {
+    flex-direction: column;
+  }
+  
+  .search-input, .date-filter, .clear-filters-btn {
+    width: 100%;
+  }
+}

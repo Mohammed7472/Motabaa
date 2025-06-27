@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../pages/pagesStyles/PatientDetails.css";
+import "../pages/pagesStyles/CommonStyles.css";
 import { useUser } from "../context/UserContext";
 import api from "../services/api";
 
 const ChronicDiseases = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { patientId, patientName } = location.state || {};
   const { isDoctor, isAuthenticated } = useUser();
   const [diseases, setDiseases] = useState([]);
@@ -292,6 +294,14 @@ const ChronicDiseases = () => {
 
   return (
     <div className="patient-details-content" style={{ padding: 32 }}>
+      <div className="common-back-button-container">
+        <button 
+          onClick={() => navigate(-1)}
+          className="common-back-button"
+        >
+          <span className="common-back-arrow">←</span> Back
+        </button>
+      </div>
       <div className="patient-details-card" style={{ marginTop: 20 }}>
         <h2 className="patient-title" style={{ 
           color: "#2e99dc", 

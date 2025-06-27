@@ -1,0 +1,45 @@
+/* Common Back Button Styles */
+.common-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #2e99dc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(46, 153, 220, 0.08);
+}
+
+.common-back-button:hover {
+  background-color: #2580c4;
+  box-shadow: 0 4px 16px rgba(46, 153, 220, 0.13);
+  transform: translateY(-2px);
+}
+
+.common-back-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.common-back-arrow {
+  font-size: 18px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 576px) {
+  .common-back-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .common-back-arrow {
+    font-size: 16px;
+  }
+}

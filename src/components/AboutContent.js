@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   FaHeartbeat,
   FaUserMd,
@@ -157,10 +158,9 @@ function AboutContent() {
               Experience the future of medical tracking and patient care with
               Motabaa
             </p>
-            <div className="cta-buttons">
-              <button className="btn-primary">Get Started</button>
-              <button className="btn-secondary">Contact Us</button>
-            </div>
+         <Link to="/register">
+            <button className="btn btn-primary">Get Started</button>
+          </Link>
           </div>
         </div>
       </div>

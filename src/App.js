@@ -23,7 +23,9 @@ import AllergiesPage from "./pages/AllergiesPage";
 import PatientAllergies from "./pages/PatientAllergies";
 import ChronicDiseases from "./pages/ChronicDiseases";
 import MedicalTests from "./pages/MedicalTests";
+import MedicalHistory from "./pages/MedicalHistory";
 import { UserProvider } from "./context/UserContext";
+import DoctorDetails from "./pages/DoctorDetails";
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
             <Route path="/patient-allergies" element={<PatientAllergies />} />
             <Route path="/chronic-diseases" element={<ChronicDiseases />} />
             <Route path="/medical-tests" element={<MedicalTests />} />
+            <Route path="/medical-history" element={<MedicalHistory />} />
+            <Route path="/doctor-details" element={<DoctorDetails />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

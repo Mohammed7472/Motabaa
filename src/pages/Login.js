@@ -55,7 +55,7 @@ function Login() {
         password: formData.password,
       };
 
-      console.log("Login request data:", requestData); // Make the login API call
+      console.log("Login request data:", requestData);
       const response = await api.auth.login(requestData);
       console.log("Login API response:", response);
 
@@ -63,8 +63,8 @@ function Login() {
         throw new Error("Invalid response from server");
       }
 
-      // Store authentication token
-      localStorage.setItem("authToken", response.token);
+      // Store authentication token in sessionStorage
+      sessionStorage.setItem("authToken", response.token);
 
       // Create user data object from the response
       const userData = {
@@ -81,18 +81,19 @@ function Login() {
         throw new Error("No role information received");
       }
 
-      // Store user role
-      localStorage.setItem("userRole", userRole); // Store complete user data
+      // Store user role and data in sessionStorage
+      sessionStorage.setItem("userRole", userRole);
       const completeUserData = {
         id: response.id,
         email: response.email,
         userName: response.userName,
         role: userRole,
         fullName: response.userName, // Use userName as fallback for fullName
+        specializationId: response.specializationid,
         // Add any additional fields needed for the UI
       };
 
-      localStorage.setItem("userData", JSON.stringify(completeUserData));
+      sessionStorage.setItem("userData", JSON.stringify(completeUserData));
       console.log("Stored user data:", completeUserData);
 
       // Notify other components of the change
@@ -100,6 +101,7 @@ function Login() {
 
       // Navigate to dashboard
       navigate("/dashboard");
+      window.location.reload(); // Force reload to hydrate context
     } catch (err) {
       console.error("Login error:", err);
       setError(

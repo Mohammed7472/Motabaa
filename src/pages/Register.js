@@ -164,11 +164,11 @@ function Register() {
       
       // Store user data including any tokens returned from the API
       if (data.token) {
-        localStorage.setItem("authToken", data.token);
+        sessionStorage.setItem("authToken", data.token);
       }
       
       // Store user role based on registration type
-      localStorage.setItem("userRole", option === "doctor" ? "Doctor" : "Patient");
+      sessionStorage.setItem("userRole", option === "doctor" ? "Doctor" : "Patient");
       
       // Store user data if available
       if (data.user) {
@@ -183,7 +183,7 @@ function Register() {
           }
         }
         
-        localStorage.setItem("userData", JSON.stringify(data.user));
+        sessionStorage.setItem("userData", JSON.stringify(data.user));
         
         // Dispatch a storage event to notify other components of the change
         window.dispatchEvent(new Event('storage'));
