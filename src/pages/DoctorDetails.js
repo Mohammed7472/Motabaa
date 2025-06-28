@@ -12,6 +12,7 @@ const DoctorDetails = () => {
   const navigate = useNavigate();
   const { userData, isDoctor, logoutUser } = useUser();
   const doctorData = location.state?.doctorData;
+  const [specializations, setSpecializations] = useState([]);
 
   // Handle logout
   const handleLogout = () => {
@@ -26,6 +27,19 @@ const DoctorDetails = () => {
     }
   }, [doctorData, navigate]);
 
+  useEffect(() => {
+    // جلب التخصصات من الـ API
+    fetch("http://motab3aa.runasp.net/api/Specialization")
+      .then((res) => res.json())
+      .then((data) => setSpecializations(data))
+      .catch(() => setSpecializations([]));
+  }, []);
+
+  const getSpecializationName = (id) => {
+    const spec = specializations.find((s) => s.id === Number(id));
+    return spec ? spec.name : "-";
+  };
+
   if (!doctorData) {
     return null;
   }
@@ -33,7 +47,11 @@ const DoctorDetails = () => {
   return (
     <div className="patient-details-container">
       <PatientNavbar
-        patientName={isDoctor() ? `Dr. ${userData?.fullName || userData?.userName}` : (userData?.fullName || userData?.userName)}
+        patientName={
+          isDoctor()
+            ? `Dr. ${userData?.fullName || userData?.userName}`
+            : userData?.fullName || userData?.userName
+        }
         patientImage={
           userData?.profileImage || (isDoctor() ? doctorAvatar : patientAvatar)
         }
@@ -44,10 +62,7 @@ const DoctorDetails = () => {
 
       <div className="patient-details-content">
         <div className="common-back-button-container">
-          <button
-            onClick={() => navigate(-1)}
-            className="common-back-button"
-          >
+          <button onClick={() => navigate(-1)} className="common-back-button">
             <span className="common-back-arrow">←</span> Back
           </button>
         </div>
@@ -117,9 +132,9 @@ const DoctorDetails = () => {
                 )}
                 {doctorData.specializationId && (
                   <div className="info-item">
-                    <span className="info-label">Specialization ID:</span>
+                    <span className="info-label">Specialization:</span>
                     <span className="info-value">
-                      {doctorData.specializationId}
+                      {getSpecializationName(doctorData.specializationId)}
                     </span>
                   </div>
                 )}
@@ -139,36 +154,6 @@ const DoctorDetails = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="action-buttons">
-            <button 
-              className="action-btn primary"
-              onClick={() =>
-                navigate("/medical-history", {
-                  state: {
-                    patientId: userData.id,
-                    patientName: userData.fullName || userData.userName,
-                  },
-                })
-              }
-            >
-              View Medical History
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
-                navigate("/medical-tests", {
-                  state: {
-                    patientId: userData.id,
-                    patientName: userData.fullName || userData.userName,
-                    patientData: userData
-                  },
-                })
-              }
-            >
-              Radiology and Laboratory Tests
-            </button>
           </div>
         </div>
       </div>
