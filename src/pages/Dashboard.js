@@ -11,6 +11,7 @@ import departmentsIcon from "../images/Mask group (1).png";
 import radiologyIcon from "../images/Mask group.png";
 import sessionsIcon from "../images/medical 1.png";
 // import allergyIcon from "../images/allergy-icon.png"; // Removed missing icon
+import chronicIcon from "../images/chronic.png"; // Add a suitable icon to your
 
 import patientAvatar from "../images/Patient 1.png";
 import doctorAvatar from "../images/Doctor 1.png";
@@ -191,6 +192,13 @@ const Dashboard = () => {
       link: "/allergies",
       className: "allergies",
     },
+    {
+      id: 5,
+      title: "CHRONIC DISEASES",
+      icon: chronicIcon,
+      link: "/chronic-diseases",
+      className: "chronic-diseases",
+    },
   ];
 
   if (error) {
@@ -329,15 +337,48 @@ const Dashboard = () => {
         {/* Patient-specific view */}
         <PatientOnly>
           <div className="cards-container">
-            {patientCards.map((card) => (
-              <DashboardCard
-                key={card.id}
-                title={card.title}
-                icon={card.icon}
-                link={card.link}
-                className={card.className}
-              />
-            ))}
+            {patientCards.map((card) => {
+              // Add debug log for chronic diseases navigation
+              if (card.title === "CHRONIC DISEASES") {
+                return (
+                  <DashboardCard
+                    key={card.id}
+                    title={card.title}
+                    icon={card.icon}
+                    link={card.link}
+                    className={card.className}
+                    onClick={() => {
+                      console.log("Navigating to chronic diseases with:", {
+                        id: userData?.id,
+                        name: userData?.fullName || userData?.userName,
+                        userData,
+                      });
+                      if (!userData?.id) {
+                        alert(
+                          "Patient ID is missing. Please log in again or contact support."
+                        );
+                        return;
+                      }
+                      navigate("/chronic-diseases", {
+                        state: {
+                          patientId: userData.id,
+                          patientName: userData.fullName || userData.userName,
+                        },
+                      });
+                    }}
+                  />
+                );
+              }
+              return (
+                <DashboardCard
+                  key={card.id}
+                  title={card.title}
+                  icon={card.icon}
+                  link={card.link}
+                  className={card.className}
+                />
+              );
+            })}
           </div>
         </PatientOnly>
       </div>

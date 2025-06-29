@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../components/componentsStyles/dashboardCard.css";
 
-const DashboardCard = ({ title, icon, link, className }) => {
+const DashboardCard = ({ title, icon, link, className, onClick }) => {
   return (
-    <Link to={link} className={`dashboard-card ${className}`}>
+    <Link to={link} className={`dashboard-card ${className}`} onClick={onClick}>
       <div className="card-content">
         <div className="icon-container">
           <img src={icon} alt={title} className="card-icon" />

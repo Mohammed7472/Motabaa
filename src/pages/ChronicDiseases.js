@@ -8,8 +8,14 @@ import api from "../services/api";
 const ChronicDiseases = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { patientId, patientName } = location.state || {};
-  const { isDoctor, isAuthenticated } = useUser();
+  const { isDoctor, isAuthenticated, userData } = useUser();
+  // Try to get patientId/patientName from navigation state, fallback to logged-in user if missing
+  let patientId = location.state?.patientId;
+  let patientName = location.state?.patientName;
+  if (!patientId && userData && userData.id) {
+    patientId = userData.id;
+    patientName = userData.fullName || userData.userName;
+  }
   const [diseases, setDiseases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +33,8 @@ const ChronicDiseases = () => {
     if (!patientId) {
       console.error("Patient ID is missing or invalid:", patientId);
       setError("Patient ID is missing. Please go back and try again.");
+      // Optional: try to go back automatically if no patientId
+      setTimeout(() => navigate(-1), 1500);
       return;
     }
 
@@ -371,81 +379,87 @@ const ChronicDiseases = () => {
                           {disease.name}
                         </strong>
                       </div>
-                      {disease.id &&
-                      disease.id.toString().startsWith("temp_") ? (
-                        <button
-                          disabled
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#aaa",
-                            cursor: "not-allowed",
-                            fontSize: "18px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: "32px",
-                            height: "32px",
-                            borderRadius: "50%",
-                          }}
-                          title="Cannot delete - ID is missing"
-                        >
-                          <span style={{ fontSize: "18px" }}>🗑️</span>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            showDeleteConfirmation(disease.id, disease.name);
-                          }}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#e74c3c",
-                            cursor: "pointer",
-                            fontSize: "18px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: "32px",
-                            height: "32px",
-                            borderRadius: "50%",
-                            transition: "background-color 0.2s",
-                          }}
-                          title="Delete disease"
-                        >
-                          <span style={{ fontSize: "18px" }}>🗑️</span>
-                        </button>
-                      )}
+                      {isDoctor() ? (
+                        disease.id &&
+                        disease.id.toString().startsWith("temp_") ? (
+                          <button
+                            disabled
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#aaa",
+                              cursor: "not-allowed",
+                              fontSize: "18px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                            }}
+                            title="Cannot delete - ID is missing"
+                          >
+                            <span style={{ fontSize: "18px" }}>🗑️</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              showDeleteConfirmation(disease.id, disease.name);
+                            }}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#e74c3c",
+                              cursor: "pointer",
+                              fontSize: "18px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                              transition: "background-color 0.2s",
+                            }}
+                            title="Delete disease"
+                          >
+                            <span style={{ fontSize: "18px" }}>🗑️</span>
+                          </button>
+                        )
+                      ) : null}
                     </li>
                   ))}
                 </ul>
               )}
 
-              <button
-                onClick={() => setShowForm(true)}
-                className="action-btn primary"
-                style={{
-                  marginTop: 24,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  width: "100%",
-                  padding: "14px",
-                  backgroundColor: "#2e99dc",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  fontWeight: "600",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s ease",
-                }}
-              >
-                <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>+</span>{" "}
-                Add New Chronic Disease
-              </button>
+              {isDoctor() && (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="action-btn primary"
+                  style={{
+                    marginTop: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    width: "100%",
+                    padding: "14px",
+                    backgroundColor: "#2e99dc",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                  }}
+                >
+                  <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                    +
+                  </span>{" "}
+                  Add New Chronic Disease
+                </button>
+              )}
             </div>
           </div>
         )}
