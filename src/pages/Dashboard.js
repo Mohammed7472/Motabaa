@@ -90,11 +90,11 @@ const Dashboard = () => {
 
   // Format user name with proper title
   const formatUserName = () => {
-    if (!userData?.fullName && !userData?.userName) {
-      return "User";
-    }
-    const name = userData.fullName || userData.userName;
-    return isDoctor() ? `Dr. ${name}` : name;
+    if (!userData) return "User";
+    
+    const name = userData.fullName || userData.userName || "User";
+    const prefix = isDoctor() && !name.startsWith("Dr.") ? "Dr. " : "";
+    return `${prefix}${name}`;
   };
 
   // Handle search button click

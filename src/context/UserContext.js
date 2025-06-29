@@ -68,10 +68,37 @@ export const UserProvider = ({ children }) => {
 
   // Function to handle user login
   const loginUser = (userData, token, role) => {
+    if (!userData || !token || !role) {
+      console.error('Invalid login data:', { userData, token, role });
+      return;
+    }
+
+    // Ensure all required fields are present
+    const validatedUserData = {
+      ...userData,
+      id: userData.id,
+      fullName: userData.fullName || userData.userName,
+      userName: userData.userName || userData.fullName,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
+      address: userData.address,
+      gender: userData.gender,
+      profileImage: userData.profileImage,
+      specialization: userData.specialization,
+      specializationId: userData.specializationId
+    };
+
+    // Store data in session
     sessionStorage.setItem("authToken", token);
     sessionStorage.setItem("userRole", role);
+    sessionStorage.setItem("userData", JSON.stringify(validatedUserData));
+
+    // Update context state
     setUserRole(role);
-    updateUserData(userData);
+    setUserData(validatedUserData);
+
+    // Dispatch storage event for other components
+    window.dispatchEvent(new Event('storage'));
   };
 
   // Function to handle user logout

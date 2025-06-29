@@ -11,21 +11,15 @@ const DoctorDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { userData, isDoctor, logoutUser } = useUser();
-  const doctorData = location.state?.doctorData;
+  const doctorData = location.state?.doctorData || userData;
   const [specializations, setSpecializations] = useState([]);
+  const [redirected, setRedirected] = useState(false);
 
   // Handle logout
   const handleLogout = () => {
     logoutUser();
     navigate("/login");
   };
-
-  // Redirect to dashboard if no doctor data
-  useEffect(() => {
-    if (!doctorData) {
-      navigate("/dashboard");
-    }
-  }, [doctorData, navigate]);
 
   useEffect(() => {
     // جلب التخصصات من الـ API
@@ -41,7 +35,13 @@ const DoctorDetails = () => {
   };
 
   if (!doctorData) {
-    return null;
+    return (
+      <div className="loading-container">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return (

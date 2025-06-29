@@ -1,6 +1,3 @@
-// API Base URL configuration
-// In development: Uses REACT_APP_API_URL from .env or defaults to empty string (relative to current domain)
-// In production: Uses REACT_APP_API_URL from .env.production or defaults to your production API URL
 const API_BASE_URL =
   process.env.REACT_APP_API_URL || "http://motab3aa.runasp.net";
   console.log("🔍 API_BASE_URL:", API_BASE_URL);
@@ -11,8 +8,7 @@ const api = {
    * @param {string} endpoint - The API endpoint (starting with /)
    * @param {Object} options - Fetch options
    * @returns {Promise<any>} - The response data
-   */
-  /**
+
    * Make an API request with enhanced error handling for various response formats
    * @param {string} endpoint - The API endpoint (starting with /)
    * @param {Object} options - Fetch options

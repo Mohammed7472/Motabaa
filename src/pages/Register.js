@@ -7,10 +7,12 @@ import gmail from "../images/gmail.png";
 import { useState, useEffect } from "react";
 import "./pagesStyles/Register.css";
 import api from '../services/api';
+import { useUser } from '../context/UserContext';
 
 function Register() {
   const { option } = useParams();
   const navigate = useNavigate();
+  const { loginUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [specializations, setSpecializations] = useState([]);
@@ -162,32 +164,39 @@ function Register() {
       
       console.log("Registration successful:", data);
       
-      // Store user data including any tokens returned from the API
-      if (data.token) {
-        sessionStorage.setItem("authToken", data.token);
-      }
+      // Use UserContext's loginUser function to properly set user data and role
+      const userRole = option === "doctor" ? "Doctor" : "Patient";
       
-      // Store user role based on registration type
-      sessionStorage.setItem("userRole", option === "doctor" ? "Doctor" : "Patient");
+      // Ensure we have a complete user data object
+      const userDataToStore = {
+        ...data.user,
+        id: data.user?.id,
+        fullName: formData.fullName,
+        userName: formData.fullName,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        address: formData.address,
+        age: parseInt(formData.age),
+        gender: formData.gender,
+        profileImage: data.user?.profileImage
+      };
       
-      // Store user data if available
-      if (data.user) {
-        // Make sure specialty is included for doctors
-        if (option === "doctor" && formData.specialty) {
-          // Add specialty to user data
-          data.user.specialty = formData.specialty;
-          
-          // If specialty is an object with label/value (from dropdown), use the label
-          if (typeof data.user.specialty === 'object' && data.user.specialty.label) {
-            data.user.specialty = data.user.specialty.label;
-          }
+      // Add specialty information for doctors
+      if (option === "doctor" && formData.specialty) {
+        if (typeof formData.specialty === 'object') {
+          userDataToStore.specializationId = formData.specialty.value;
+          userDataToStore.specialization = formData.specialty.label;
+        } else {
+          userDataToStore.specializationId = formData.specialty;
+          userDataToStore.specialization = formData.specialty;
         }
-        
-        sessionStorage.setItem("userData", JSON.stringify(data.user));
-        
-        // Dispatch a storage event to notify other components of the change
-        window.dispatchEvent(new Event('storage'));
       }
+      
+      // Call loginUser from UserContext to properly set user data and role
+      loginUser(userDataToStore, data.token, userRole);
+      
+      // Also update sessionStorage directly to ensure data consistency
+      sessionStorage.setItem("userData", JSON.stringify(userDataToStore));
       
       // Navigate to dashboard on success
       navigate("/dashboard");
