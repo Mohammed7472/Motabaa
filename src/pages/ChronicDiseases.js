@@ -14,8 +14,15 @@ const ChronicDiseases = () => {
   let patientName = location.state?.patientName;
   if (!patientId && userData && userData.id) {
     patientId = userData.id;
-    patientName = userData.fullName || userData.userName;
   }
+  // Always get the name from state, fallback to userData if not present
+  const getPatientName = () => {
+    if (patientName) return patientName;
+    if (userData && (userData.fullName || userData.userName)) {
+      return userData.fullName || userData.userName;
+    }
+    return "";
+  };
   const [diseases, setDiseases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -213,7 +220,18 @@ const ChronicDiseases = () => {
   return (
     <div className="patient-details-content" style={{ padding: 32 }}>
       <div className="common-back-button-container">
-        <button onClick={() => navigate(-1)} className="common-back-button">
+        <button
+          onClick={() => {
+            if (isDoctor()) {
+              // Go back to previous page (PatientDetails)
+              navigate(-1);
+            } else {
+              // Go to Dashboard for patients
+              navigate("/dashboard");
+            }
+          }}
+          className="common-back-button"
+        >
           <span className="common-back-arrow">←</span> Back
         </button>
       </div>
@@ -229,7 +247,7 @@ const ChronicDiseases = () => {
             paddingBottom: "16px",
           }}
         >
-          Chronic Diseases for {patientName}
+          Chronic Diseases for {getPatientName()}
         </h2>
 
         {loading && (

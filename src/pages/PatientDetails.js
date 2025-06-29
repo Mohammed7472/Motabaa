@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PatientNavbar from "../components/PatientNavbar";
 import { useUser } from "../context/UserContext";
@@ -30,17 +31,23 @@ const PatientDetails = () => {
     return null;
   }
 
+  // تحديد هل المريض يعرض تفاصيل نفسه (وليس عن طريق دكتور)
+  const isPatientViewingSelf = !isDoctor() && userData?.id === patientData?.id;
+
   return (
     <div className="patient-details-container">
-      <PatientNavbar
-        patientName={isDoctor() ? `Dr. ${userData?.fullName || userData?.userName}` : (userData?.fullName || userData?.userName)}
-        patientImage={
-          userData?.profileImage || (isDoctor() ? doctorAvatar : patientAvatar)
-        }
-        isDoctor={isDoctor()}
-        onLogout={handleLogout}
-        userData={userData}
-      />
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <PatientNavbar
+          patientName={isDoctor() ? `Dr. ${userData?.fullName || userData?.userName}` : (userData?.fullName || userData?.userName)}
+          patientImage={
+            userData?.profileImage || (isDoctor() ? doctorAvatar : patientAvatar)
+          }
+          isDoctor={isDoctor()}
+          onLogout={handleLogout}
+          userData={userData}
+        />
+      </div>
 
       <div className="patient-details-content">
         <div className="common-back-button-container">
@@ -143,61 +150,64 @@ const PatientDetails = () => {
             </div>
           </div>
 
-          <div className="action-buttons">
-            <button 
-              className="action-btn primary"
-              onClick={() =>
-                navigate("/medical-history", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                  },
-                })
-              }
-            >
-              View Medical History
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
-                navigate("/chronic-diseases", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                  },
-                })
-              }
-            >
-              Chronic Diseases
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
-                navigate("/medical-tests", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                    patientData: patientData
-                  },
-                })
-              }
-            >
-              Radiology and Laboratory Tests
-            </button>
-            <button
-              className="action-btn secondary"
-              onClick={() =>
-                navigate("/patient-allergies", {
-                  state: {
-                    patientId: patientData.id,
-                    patientName: patientData.fullName || patientData.userName,
-                  },
-                })
-              }
-            >
-              Allergies
-            </button>
-          </div>
+          {/* تظهر الأزرار فقط للطبيب أو إذا كان المستخدم ليس المريض نفسه */}
+          {(isDoctor() || !isPatientViewingSelf) ? (
+            <div className="action-buttons">
+              <button 
+                className="action-btn primary"
+                onClick={() =>
+                  navigate("/medical-history", {
+                    state: {
+                      patientId: patientData.id,
+                      patientName: patientData.fullName || patientData.userName,
+                    },
+                  })
+                }
+              >
+                View Medical History
+              </button>
+              <button
+                className="action-btn secondary"
+                onClick={() =>
+                  navigate("/chronic-diseases", {
+                    state: {
+                      patientId: patientData.id,
+                      patientName: patientData.fullName || patientData.userName,
+                    },
+                  })
+                }
+              >
+                Chronic Diseases
+              </button>
+              <button
+                className="action-btn secondary"
+                onClick={() =>
+                  navigate("/medical-tests", {
+                    state: {
+                      patientId: patientData.id,
+                      patientName: patientData.fullName || patientData.userName,
+                      patientData: patientData
+                    },
+                  })
+                }
+              >
+                Radiology and Laboratory Tests
+              </button>
+              <button
+                className="action-btn secondary"
+                onClick={() =>
+                  navigate("/patient-allergies", {
+                    state: {
+                      patientId: patientData.id,
+                      patientName: patientData.fullName || patientData.userName,
+                    },
+                  })
+                }
+              >
+                Allergies
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

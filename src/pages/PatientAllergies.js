@@ -9,7 +9,7 @@ const PatientAllergies = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { patientId, patientName } = location.state || {};
-  const { isDoctor, isAuthenticated } = useUser();
+  const { isDoctor, isAuthenticated, userData } = useUser();
   const [allergies, setAllergies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,15 +22,27 @@ const PatientAllergies = () => {
     allergyName: "",
   });
 
+  // Get patient name fallback
+  const getPatientName = () => {
+    if (patientName) return patientName;
+    if (userData && (userData.fullName || userData.userName)) {
+      return userData.fullName || userData.userName;
+    }
+    return "";
+  };
+
   useEffect(() => {
-    if (!patientId) return;
+    let id = patientId;
+    if (!id && typeof userData === "object" && userData && userData.id) {
+      id = userData.id;
+    }
+    if (!id) return;
     setLoading(true);
     setError("");
 
     api.patient
-      .getAllergies(patientId)
+      .getAllergies(id)
       .then((data) => {
-        // Process the data to ensure each allergy has an ID
         const processedData = Array.isArray(data)
           ? data.map((allergy, index) => {
               if (!allergy.id) {
@@ -187,7 +199,16 @@ const PatientAllergies = () => {
   return (
     <div className="patient-details-content" style={{ padding: 32 }}>
       <div className="common-back-button-container">
-        <button onClick={() => navigate(-1)} className="common-back-button">
+        <button
+          onClick={() => {
+            if (isDoctor()) {
+              navigate(-1); // Go back to previous page (PatientDetails)
+            } else {
+              navigate("/dashboard");
+            }
+          }}
+          className="common-back-button"
+        >
           <span className="common-back-arrow">←</span> Back
         </button>
       </div>
@@ -203,7 +224,7 @@ const PatientAllergies = () => {
             paddingBottom: "16px",
           }}
         >
-          Allergies for {patientName}
+          Allergies for {getPatientName()}
         </h2>
 
         {loading && (
@@ -356,80 +377,85 @@ const PatientAllergies = () => {
                           {a.name}
                         </strong>
                       </div>
-                      {a.id && a.id.toString().startsWith("temp_") ? (
-                        <button
-                          disabled
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#aaa",
-                            cursor: "not-allowed",
-                            fontSize: "18px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: "32px",
-                            height: "32px",
-                            borderRadius: "50%",
-                          }}
-                          title="Cannot delete - ID is missing"
-                        >
-                          <span style={{ fontSize: "18px" }}>🗑️</span>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            showDeleteConfirmation(a.id, a.name);
-                          }}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#e74c3c",
-                            cursor: "pointer",
-                            fontSize: "18px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: "32px",
-                            height: "32px",
-                            borderRadius: "50%",
-                            transition: "background-color 0.2s",
-                          }}
-                          title="Delete allergy"
-                        >
-                          <span style={{ fontSize: "18px" }}>🗑️</span>
-                        </button>
-                      )}
+                      {isDoctor() &&
+                        (a.id && a.id.toString().startsWith("temp_") ? (
+                          <button
+                            disabled
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#aaa",
+                              cursor: "not-allowed",
+                              fontSize: "18px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                            }}
+                            title="Cannot delete - ID is missing"
+                          >
+                            <span style={{ fontSize: "18px" }}>🗑️</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              showDeleteConfirmation(a.id, a.name);
+                            }}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#e74c3c",
+                              cursor: "pointer",
+                              fontSize: "18px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "50%",
+                              transition: "background-color 0.2s",
+                            }}
+                            title="Delete allergy"
+                          >
+                            <span style={{ fontSize: "18px" }}>🗑️</span>
+                          </button>
+                        ))}
                     </li>
                   ))}
                 </ul>
               )}
 
-              <button
-                onClick={() => setShowForm(true)}
-                className="action-btn primary"
-                style={{
-                  marginTop: 24,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  width: "100%",
-                  padding: "14px",
-                  backgroundColor: "#2e99dc",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  fontWeight: "600",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s ease",
-                }}
-              >
-                <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>+</span>{" "}
-                Add New Allergy
-              </button>
+              {isDoctor() && (
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="action-btn primary"
+                  style={{
+                    marginTop: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    width: "100%",
+                    padding: "14px",
+                    backgroundColor: "#2e99dc",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                  }}
+                >
+                  <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+                    +
+                  </span>{" "}
+                  Add New Allergy
+                </button>
+              )}
             </div>
           </div>
         )}

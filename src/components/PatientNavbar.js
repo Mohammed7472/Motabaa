@@ -62,7 +62,21 @@ const PatientNavbar = ({
                       })
                     }
                   >
-                    <i className="bi bi-person-vcard me-2"></i>Doctor Details
+                    <i className="bi bi-person-vcard me-2"></i>My Details
+                  </button>
+                </li>
+              )}
+              {!isDoctor && (
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      navigate("/patient-details", {
+                        state: { patientData: userData },
+                      })
+                    }
+                  >
+                    <i className="bi bi-person-vcard me-2"></i>My Details
                   </button>
                 </li>
               )}

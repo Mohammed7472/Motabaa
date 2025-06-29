@@ -338,7 +338,7 @@ const Dashboard = () => {
         <PatientOnly>
           <div className="cards-container">
             {patientCards.map((card) => {
-              // Add debug log for chronic diseases navigation
+              // Special handling for chronic diseases
               if (card.title === "CHRONIC DISEASES") {
                 return (
                   <DashboardCard
@@ -348,11 +348,6 @@ const Dashboard = () => {
                     link={card.link}
                     className={card.className}
                     onClick={() => {
-                      console.log("Navigating to chronic diseases with:", {
-                        id: userData?.id,
-                        name: userData?.fullName || userData?.userName,
-                        userData,
-                      });
                       if (!userData?.id) {
                         alert(
                           "Patient ID is missing. Please log in again or contact support."
@@ -369,6 +364,33 @@ const Dashboard = () => {
                   />
                 );
               }
+              // Special handling for allergies
+              if (card.title === "ALLERGIES") {
+                return (
+                  <DashboardCard
+                    key={card.id}
+                    title={card.title}
+                    icon={card.icon}
+                    link={"/patient-allergies"}
+                    className={card.className}
+                    onClick={() => {
+                      if (!userData?.id) {
+                        alert(
+                          "Patient ID is missing. Please log in again or contact support."
+                        );
+                        return;
+                      }
+                      navigate("/patient-allergies", {
+                        state: {
+                          patientId: userData.id,
+                          patientName: userData.fullName || userData.userName,
+                        },
+                      });
+                    }}
+                  />
+                );
+              }
+              // Default
               return (
                 <DashboardCard
                   key={card.id}
