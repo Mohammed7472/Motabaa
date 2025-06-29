@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import PatientNavbar from "../components/PatientNavbar";
 import DashboardCard from "../components/DashboardCard";
 import "../pages/pagesStyles/Dashboard.css";
@@ -91,7 +92,7 @@ const Dashboard = () => {
   // Format user name with proper title
   const formatUserName = () => {
     if (!userData) return "User";
-    
+
     const name = userData.fullName || userData.userName || "User";
     const prefix = isDoctor() && !name.startsWith("Dr.") ? "Dr. " : "";
     return `${prefix}${name}`;
@@ -106,66 +107,34 @@ const Dashboard = () => {
 
     // Set flag to indicate a search has been performed
     setHasSearched(true);
-    
     setIsSearching(true);
     setSearchError("");
 
     try {
-      console.log("Searching for:", searchQuery);
-      // Use relative path to work with the proxy setup
-      console.log(
-        "API URL:",
-        `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`
-      );
-
-      // Get token from localStorage if available
-      const token =
-        localStorage.getItem("token") || localStorage.getItem("authToken");
-
-      const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      };
-
-      // Add authorization header if token exists
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      // Use relative path to work with the proxy setup
-      const response = await fetch(
-        `/api/Account/SearchByName?name=${encodeURIComponent(searchQuery)}`,
-        {
-          method: "GET",
-          headers: headers,
-          // No need for CORS mode when using relative paths with proxy
-          credentials: "include", // Added to include cookies if needed for authentication
-        }
-      );
-
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API Error Response:", errorText);
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
+      const data = await api.search.searchByName(searchQuery);
       console.log("Search results:", data);
 
-      // Filter and process the data to only include patients
+      // Process and filter the data
       const processData = (rawData) => {
-        const dataArray = Array.isArray(rawData) ? rawData : rawData?.results || rawData?.data || [rawData];
-        // Filter out doctors (users with specializationId)
-        const patientsOnly = dataArray.filter(user => user.specializationId === null);
-        return patientsOnly;
+        // Convert the data to an array if it's not already
+        const dataArray = Array.isArray(rawData)
+          ? rawData
+          : rawData?.results || rawData?.data || [rawData];
+
+        // Keep both patients and doctors, but mark them accordingly
+        return dataArray.map((user) => ({
+          ...user,
+          isDoctor: Boolean(user.specializationId || user.specialization),
+        }));
       };
 
-      const filteredResults = processData(data);
-      setSearchResults(filteredResults);
-      console.log("Setting filtered patient results:", filteredResults.length, "items");
+      const processedResults = processData(data);
+      setSearchResults(processedResults);
+      console.log(
+        "Setting processed results:",
+        processedResults.length,
+        "items"
+      );
     } catch (error) {
       console.error("Error searching patients:", error);
       setSearchError(`Failed to search patients: ${error.message}`);
@@ -300,65 +269,60 @@ const Dashboard = () => {
                 <div className="search-results-card">
                   <h3 className="search-results-title">Search Results</h3>
                   <div className="patient-cards-grid">
-                    {/* Display both patients and doctors with different handling */}
-                    {searchResults.map((user) => {
-                      const isDoctor = user.specializationId !== null;
-                      return (
+                    {/* Display only patients */}
+                    {searchResults
+                      .filter(
+                        (user) =>
+                          user.specializationId === null ||
+                          user.specializationId === undefined
+                      )
+                      .map((user) => (
                         <div
                           key={user.id}
-                          className={`modern-patient-card ${isDoctor ? 'doctor-card' : ''}`}
-                          onClick={() => {
-                            if (isDoctor) {
-                              // Navigate to doctor details page
-                              navigate("/doctor-details", { state: { doctorData: user } });
-                            } else {
-                              // Navigate to patient details page
-                              handlePatientClick(user);
-                            }
-                          }}
+                          className="modern-patient-card"
+                          onClick={() => handlePatientClick(user)}
                         >
                           <div className="modern-patient-avatar">
                             <img
-                              src={user.profileImage || (isDoctor ? doctorAvatar : patientAvatar)}
-                              alt={user.userName || (isDoctor ? "Doctor" : "Patient")}
+                              src={user.profileImage || patientAvatar}
+                              alt={user.userName || "Patient"}
                               className="modern-patient-image"
                             />
                           </div>
                           <div className="modern-patient-info">
                             <h4 className="modern-patient-name">
-                              {isDoctor ? `Dr. ${user.fullName || user.userName || "Unknown Doctor"}` : 
-                                (user.fullName || user.userName || "Unknown Patient")}
+                              {user.fullName ||
+                                user.userName ||
+                                "Unknown Patient"}
                             </h4>
                             <p className="modern-patient-email">
                               {user.email || "No email provided"}
                             </p>
-                            {isDoctor ? (
-                              <p className="modern-patient-specialization">
-                                {user.specialization || "Specialist"}
-                              </p>
-                            ) : (
-                              <p className="modern-patient-age">
-                                {user.age ? `${user.age} years old` : "Age not available"}
-                              </p>
-                            )}
+                            <p className="modern-patient-age">
+                              {user.age
+                                ? `${user.age} years old`
+                                : "Age not available"}
+                            </p>
                             <p className="patient-phone">
                               {user.phoneNumber || "No phone number"}
                             </p>
                           </div>
                         </div>
-                      );
-                    })}
+                      ))}
                   </div>
                 </div>
               </div>
             )}
 
             {/* Only show no results message after a search has been performed */}
-            {searchQuery && searchResults.length === 0 && !isSearching && hasSearched && (
-              <div className="no-results">
-                <p>No patients found with the name "{searchQuery}"</p>
-              </div>
-            )}
+            {searchQuery &&
+              searchResults.length === 0 &&
+              !isSearching &&
+              hasSearched && (
+                <div className="no-results">
+                  <p>No patients found with the name "{searchQuery}"</p>
+                </div>
+              )}
           </div>
         </DoctorOnly>
 

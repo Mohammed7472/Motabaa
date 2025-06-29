@@ -16,7 +16,11 @@ const ChronicDiseases = () => {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ diseaseName: "" });
   const [submitMsg, setSubmitMsg] = useState("");
-  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, diseaseId: null, diseaseName: "" });
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    show: false,
+    diseaseId: null,
+    diseaseName: "",
+  });
 
   useEffect(() => {
     // Enhanced validation for patientId
@@ -25,52 +29,40 @@ const ChronicDiseases = () => {
       setError("Patient ID is missing. Please go back and try again.");
       return;
     }
-    
+
     setLoading(true);
     setError("");
-    
+
     // Log the exact patient ID being used
     console.log("Fetching chronic diseases for patient ID:", patientId);
     console.log("Patient ID type:", typeof patientId);
-    
+
     // Use relative URL with the proxy setup
-    const endpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
+    const endpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(
+      patientId
+    )}`;
     console.log("API endpoint being called:", endpoint);
-    
-    // Use fetch with authentication token
-    fetch(endpoint, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add auth token
-      }
-    })
-      .then(response => {
-        // Log the complete response for debugging
-        console.log("Response status:", response.status);
-        console.log("Response headers:", [...response.headers.entries()]);
-          
-          if (!response.ok) {
-            console.error("Response not OK:", response.status, response.statusText);
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log("Chronic diseases data received:", data);
-          // Ensure each disease has an ID by assigning a temporary one if missing
-          const processedData = Array.isArray(data) ? data.map((disease, index) => {
-            if (!disease.id) {
-              console.log(`Disease ${disease.name} is missing ID, assigning temporary ID`);
-              return { ...disease, id: `temp_${index}` };
-            }
-            return disease;
-          }) : [];
-          setDiseases(processedData);
-        })
-        .catch((err) => {
-          console.error("API error:", err);
-          setError(`Error fetching chronic diseases: ${err.message}. Please check the patient ID and try again.`);
-        })
-        .finally(() => setLoading(false));
+
+    // Use api service for fetching chronic diseases
+    api.chronicDiseases
+      .getAll(patientId)
+      .then((data) => {
+        const processedData = Array.isArray(data)
+          ? data.map((disease, index) => {
+              if (!disease.id) {
+                return { ...disease, id: `temp_${index}` };
+              }
+              return disease;
+            })
+          : [];
+        setDiseases(processedData);
+      })
+      .catch((err) => {
+        setError(
+          `Error fetching chronic diseases: ${err.message}. Please check the patient ID and try again.`
+        );
+      })
+      .finally(() => setLoading(false));
   }, [patientId]);
 
   const handleChange = (e) => {
@@ -80,102 +72,51 @@ const ChronicDiseases = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitMsg("");
-    
+
     // Check if user is a doctor and authenticated
     if (!isDoctor()) {
       setSubmitMsg("Only doctors can add chronic diseases.");
       return;
     }
-    
+
     if (!isAuthenticated) {
       setSubmitMsg("You must be logged in to add chronic diseases.");
       return;
     }
-    
+
     // Enhanced validation for patient ID
     if (!patientId) {
-      console.error("Patient ID is missing or invalid during form submission:", patientId);
+      console.error(
+        "Patient ID is missing or invalid during form submission:",
+        patientId
+      );
       setSubmitMsg("Patient ID is missing. Cannot add chronic disease.");
       return;
     }
-    
+
     const payload = {
       name: form.diseaseName,
       patientId: patientId,
-      patientName: patientName
+      patientName: patientName,
     };
-    
+
     // Log the exact payload being sent
     console.log("Sending chronic disease data:", JSON.stringify(payload));
-    
+
     try {
-      // Use the api service which properly handles authentication tokens
-      // Send POST request to add chronic disease using relative URL
-      const endpoint = "/api/ChronicDiseases";
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add auth token
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      // Log response details for debugging
-      console.log("POST response status:", response.status);
-      console.log("POST response headers:", [...response.headers.entries()]);
-      
-      if (!response.ok) {
-        // Try to get more detailed error information
-        let errorText = "";
-        try {
-          errorText = await response.text();
-          console.error("Error response body:", errorText);
-          
-          // Try to parse as JSON if possible for more structured error info
-          try {
-            const errorJson = JSON.parse(errorText);
-            console.error("Parsed error response:", errorJson);
-          } catch (parseErr) {
-            // Not JSON, continue with text
-          }
-        } catch (textErr) {
-          console.error("Could not read error response text", textErr);
-        }
-        
-        throw new Error(`HTTP error! Status: ${response.status}. ${errorText || ''}`);
-      }
-      
+      await api.chronicDiseases.add(payload);
       setSubmitMsg("Chronic disease added successfully!");
       setForm({ diseaseName: "" });
-      
-      // Refresh diseases list with improved error handling
-      console.log("Refreshing diseases list for patient ID:", patientId);
-      const refreshEndpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
-      console.log("Refresh endpoint:", refreshEndpoint);
-      
-      const updatedResponse = await fetch(refreshEndpoint, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add auth token
-        }
-      });
-      console.log("Refresh response status:", updatedResponse.status);
-      
-      if (!updatedResponse.ok) {
-        console.error("Error refreshing list:", updatedResponse.status, updatedResponse.statusText);
-        let refreshErrorText = await updatedResponse.text();
-        console.error("Refresh error response:", refreshErrorText);
-        throw new Error(`Error refreshing list. Status: ${updatedResponse.status}`);
-      }
-      
-      const updated = await updatedResponse.json();
-      console.log("Updated chronic diseases data:", updated);
-      
+      // Refresh diseases list
+      const updated = await api.chronicDiseases.getAll(patientId);
       setDiseases(Array.isArray(updated) ? updated : []);
       setShowForm(false);
     } catch (error) {
-      console.error("Error adding chronic disease:", error);
-      setSubmitMsg(`Error: ${error.message || "Failed to add chronic disease. Please try again."}`);
+      setSubmitMsg(
+        `Error: ${
+          error.message || "Failed to add chronic disease. Please try again."
+        }`
+      );
     }
   };
 
@@ -185,7 +126,7 @@ const ChronicDiseases = () => {
       setSubmitMsg("Only doctors can delete chronic diseases.");
       return;
     }
-    
+
     if (!isAuthenticated) {
       setSubmitMsg("You must be logged in to delete chronic diseases.");
       return;
@@ -196,71 +137,38 @@ const ChronicDiseases = () => {
       setSubmitMsg("Disease ID is missing. Cannot delete chronic disease.");
       return;
     }
-    
+
     // Check if the ID is a temporary ID (starts with 'temp_')
-    if (diseaseId.toString().startsWith('temp_')) {
+    if (diseaseId.toString().startsWith("temp_")) {
       console.error("Cannot delete disease with temporary ID:", diseaseId);
       setSubmitMsg("Disease ID is missing. Cannot delete chronic disease.");
       return;
     }
 
     try {
-      // Call the API to delete the chronic disease
-      // Include both the disease ID and patient ID as required by the API
-      const endpoint = `/api/ChronicDiseases?id=${diseaseId}&patientId=${encodeURIComponent(patientId)}`;
-      console.log("Deleting chronic disease with ID:", diseaseId, "for patient ID:", patientId);
-      
-      const response = await fetch(endpoint, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add auth token
-        }
-      });
-      
-      console.log("DELETE response status:", response.status);
-      
-      if (!response.ok) {
-        let errorText = await response.text();
-        console.error("Error response body:", errorText);
-        throw new Error(`HTTP error! Status: ${response.status}. ${errorText || ''}`);
-      }
-      
+      await api.chronicDiseases.deleteDisease(diseaseId, patientId);
       // Refresh the diseases list after successful deletion
-      console.log("Refreshing diseases list after deletion");
-      const refreshEndpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`;
-      
-      const updatedResponse = await fetch(refreshEndpoint, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Add auth token
-        }
-      });
-      
-      if (!updatedResponse.ok) {
-        console.error("Error refreshing list:", updatedResponse.status);
-        throw new Error(`Error refreshing list. Status: ${updatedResponse.status}`);
-      }
-      
-      const updated = await updatedResponse.json();
-      console.log("Updated chronic diseases data:", updated);
-      
+      const updated = await api.chronicDiseases.getAll(patientId);
       // Process the updated data to ensure each disease has an ID
-      const processedData = Array.isArray(updated) ? updated.map((disease, index) => {
-        if (!disease.id) {
-          return { ...disease, id: `temp_${index}` };
-        }
-        return disease;
-      }) : [];
-      
+      const processedData = Array.isArray(updated)
+        ? updated.map((disease, index) => {
+            if (!disease.id) {
+              return { ...disease, id: `temp_${index}` };
+            }
+            return disease;
+          })
+        : [];
       setDiseases(processedData);
       setSubmitMsg("Chronic disease deleted successfully!");
-      
-      // Clear the success message after 3 seconds
       setTimeout(() => {
         setSubmitMsg("");
       }, 3000);
     } catch (error) {
-      console.error("Error deleting chronic disease:", error);
-      setSubmitMsg(`Error: ${error.message || "Failed to delete chronic disease. Please try again."}`);
+      setSubmitMsg(
+        `Error: ${
+          error.message || "Failed to delete chronic disease. Please try again."
+        }`
+      );
     }
   };
 
@@ -269,7 +177,7 @@ const ChronicDiseases = () => {
     setDeleteConfirmation({
       show: true,
       diseaseId,
-      diseaseName
+      diseaseName,
     });
   };
 
@@ -278,7 +186,7 @@ const ChronicDiseases = () => {
     setDeleteConfirmation({
       show: false,
       diseaseId: null,
-      diseaseName: ""
+      diseaseName: "",
     });
   };
 
@@ -290,129 +198,182 @@ const ChronicDiseases = () => {
   };
 
   // Check if any diseases have temporary IDs
-  const hasMissingIds = diseases.some(disease => disease.id && disease.id.toString().startsWith('temp_'));
+  const hasMissingIds = diseases.some(
+    (disease) => disease.id && disease.id.toString().startsWith("temp_")
+  );
 
   return (
     <div className="patient-details-content" style={{ padding: 32 }}>
       <div className="common-back-button-container">
-        <button 
-          onClick={() => navigate(-1)}
-          className="common-back-button"
-        >
+        <button onClick={() => navigate(-1)} className="common-back-button">
           <span className="common-back-arrow">←</span> Back
         </button>
       </div>
       <div className="patient-details-card" style={{ marginTop: 20 }}>
-        <h2 className="patient-title" style={{ 
-          color: "#2e99dc", 
-          fontSize: "28px", 
-          marginBottom: "24px",
-          textAlign: "center",
-          borderBottom: "2px solid #f0f0f0",
-          paddingBottom: "16px" 
-        }}>Chronic Diseases for {patientName}</h2>
-        
-        {loading && <div className="loading-indicator" style={{ textAlign: "center", padding: "30px" }}>Loading...</div>}
-        {error && <div style={{ color: "red", marginBottom: 16, textAlign: "center", padding: "10px", backgroundColor: "#ffebee", borderRadius: "8px" }}>{error}</div>}
+        <h2
+          className="patient-title"
+          style={{
+            color: "#2e99dc",
+            fontSize: "28px",
+            marginBottom: "24px",
+            textAlign: "center",
+            borderBottom: "2px solid #f0f0f0",
+            paddingBottom: "16px",
+          }}
+        >
+          Chronic Diseases for {patientName}
+        </h2>
+
+        {loading && (
+          <div
+            className="loading-indicator"
+            style={{ textAlign: "center", padding: "30px" }}
+          >
+            Loading...
+          </div>
+        )}
+        {error && (
+          <div
+            style={{
+              color: "red",
+              marginBottom: 16,
+              textAlign: "center",
+              padding: "10px",
+              backgroundColor: "#ffebee",
+              borderRadius: "8px",
+            }}
+          >
+            {error}
+          </div>
+        )}
         {hasMissingIds && !loading && (
-          <div style={{ 
-            marginBottom: "16px", 
-            padding: "10px", 
-            borderRadius: "6px", 
-            backgroundColor: "#fff3e0",
-            color: "#e65100",
-            textAlign: "center"
-          }}>
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "10px",
+              borderRadius: "6px",
+              backgroundColor: "#fff3e0",
+              color: "#e65100",
+              textAlign: "center",
+            }}
+          >
             Disease ID is missing. Cannot delete chronic disease.
           </div>
         )}
         {submitMsg && !showForm && (
-          <div style={{ 
-            marginBottom: "16px", 
-            padding: "10px", 
-            borderRadius: "6px", 
-            backgroundColor: submitMsg.includes("success") ? "#e6f7e6" : "#ffebeb",
-            color: submitMsg.includes("success") ? "#2e7d32" : "#d32f2f",
-            textAlign: "center"
-          }}>
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "10px",
+              borderRadius: "6px",
+              backgroundColor: submitMsg.includes("success")
+                ? "#e6f7e6"
+                : "#ffebeb",
+              color: submitMsg.includes("success") ? "#2e7d32" : "#d32f2f",
+              textAlign: "center",
+            }}
+          >
             {submitMsg}
           </div>
         )}
-        
+
         {!loading && !error && (
-          <div style={{ 
-            display: "flex", 
-            flexDirection: "column",
-            alignItems: "stretch",
-            width: "100%",
-            maxWidth: "800px",
-            margin: "0 auto"
-          }}>
-            <div style={{ 
-              backgroundColor: "#f8f9fa", 
-              borderRadius: "16px", 
-              padding: "24px",
-              marginBottom: "24px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-            }}>
-              <h3 className="section-title" style={{ 
-                color: "#333", 
-                fontSize: "20px", 
-                marginBottom: "16px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}>
-                <div style={{ 
-                  width: "16px", 
-                  height: "16px", 
-                  backgroundColor: "#2e99dc", 
-                  borderRadius: "50%" 
-                }}></div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "stretch",
+              width: "100%",
+              maxWidth: "800px",
+              margin: "0 auto",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: "16px",
+                padding: "24px",
+                marginBottom: "24px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+              }}
+            >
+              <h3
+                className="section-title"
+                style={{
+                  color: "#333",
+                  fontSize: "20px",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    backgroundColor: "#2e99dc",
+                    borderRadius: "50%",
+                  }}
+                ></div>
                 Current Chronic Diseases
               </h3>
-              
+
               {diseases.length === 0 ? (
-                <div style={{ 
-                  color: "#666", 
-                  fontStyle: "italic", 
-                  padding: "20px", 
-                  textAlign: "center",
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                  border: "1px dashed #ddd"
-                }}>No chronic diseases found for this patient.</div>
+                <div
+                  style={{
+                    color: "#666",
+                    fontStyle: "italic",
+                    padding: "20px",
+                    textAlign: "center",
+                    backgroundColor: "white",
+                    borderRadius: "12px",
+                    border: "1px dashed #ddd",
+                  }}
+                >
+                  No chronic diseases found for this patient.
+                </div>
               ) : (
                 <ul style={{ listStyle: "none", padding: 0 }}>
                   {diseases.map((disease, index) => (
-                    <li key={index} style={{ 
-                      padding: "16px 24px", 
-                      margin: "12px 0", 
-                      backgroundColor: "white", 
-                      borderRadius: "12px",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
-                      border: "1px solid #e0e0e0",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between"
-                    }}>
+                    <li
+                      key={index}
+                      style={{
+                        padding: "16px 24px",
+                        margin: "12px 0",
+                        backgroundColor: "white",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
+                        border: "1px solid #e0e0e0",
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{
-                          width: "10px",
-                          height: "10px",
-                          backgroundColor: "#2e99dc",
-                          borderRadius: "50%",
-                          marginRight: "16px"
-                        }}></div>
-                        <strong style={{ 
-                          color: "#333", 
-                          fontSize: "1.1em",
-                          fontWeight: "500"
-                        }}>{disease.name}</strong>
+                        <div
+                          style={{
+                            width: "10px",
+                            height: "10px",
+                            backgroundColor: "#2e99dc",
+                            borderRadius: "50%",
+                            marginRight: "16px",
+                          }}
+                        ></div>
+                        <strong
+                          style={{
+                            color: "#333",
+                            fontSize: "1.1em",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {disease.name}
+                        </strong>
                       </div>
-                      {disease.id && disease.id.toString().startsWith('temp_') ? (
-                        <button 
+                      {disease.id &&
+                      disease.id.toString().startsWith("temp_") ? (
+                        <button
                           disabled
                           style={{
                             background: "none",
@@ -432,7 +393,7 @@ const ChronicDiseases = () => {
                           <span style={{ fontSize: "18px" }}>🗑️</span>
                         </button>
                       ) : (
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             showDeleteConfirmation(disease.id, disease.name);
@@ -449,7 +410,7 @@ const ChronicDiseases = () => {
                             width: "32px",
                             height: "32px",
                             borderRadius: "50%",
-                            transition: "background-color 0.2s"
+                            transition: "background-color 0.2s",
                           }}
                           title="Delete disease"
                         >
@@ -460,11 +421,11 @@ const ChronicDiseases = () => {
                   ))}
                 </ul>
               )}
-              
-              <button 
-                onClick={() => setShowForm(true)} 
+
+              <button
+                onClick={() => setShowForm(true)}
                 className="action-btn primary"
-                style={{ 
+                style={{
                   marginTop: 24,
                   display: "flex",
                   alignItems: "center",
@@ -479,45 +440,63 @@ const ChronicDiseases = () => {
                   fontWeight: "600",
                   fontSize: "16px",
                   cursor: "pointer",
-                  transition: "background-color 0.2s ease"
+                  transition: "background-color 0.2s ease",
                 }}
               >
-                <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>+</span> Add New Chronic Disease
+                <span style={{ fontSize: "1.2em", fontWeight: "bold" }}>+</span>{" "}
+                Add New Chronic Disease
               </button>
             </div>
           </div>
         )}
       </div>
-      
+
       {/* Modal Popup for Adding Chronic Disease */}
       {showForm && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            width: "90%",
-            maxWidth: "500px",
-            boxShadow: "0 5px 15px rgba(0,0,0,0.2)"
-          }}>
-            <h3 style={{ marginTop: 0, color: "#2e99dc", borderBottom: "1px solid #eee", paddingBottom: "10px" }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              width: "90%",
+              maxWidth: "500px",
+              boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
+            }}
+          >
+            <h3
+              style={{
+                marginTop: 0,
+                color: "#2e99dc",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+              }}
+            >
               Add New Chronic Disease
             </h3>
-            
+
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: "20px" }}>
-                <label style={{ display: "block", marginBottom: "8px", fontWeight: "500" }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: "500",
+                  }}
+                >
                   Disease Name:
                 </label>
                 <input
@@ -533,14 +512,21 @@ const ChronicDiseases = () => {
                     borderRadius: "8px",
                     border: "1px solid #ddd",
                     fontSize: "16px",
-                    backgroundColor: "#f9f9f9"
+                    backgroundColor: "#f9f9f9",
                   }}
                 />
               </div>
-              
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
-                <button 
-                  type="button" 
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "12px",
+                  marginTop: "24px",
+                }}
+              >
+                <button
+                  type="button"
                   onClick={() => setShowForm(false)}
                   style={{
                     padding: "10px 16px",
@@ -548,13 +534,13 @@ const ChronicDiseases = () => {
                     border: "1px solid #ddd",
                     backgroundColor: "#f5f5f5",
                     cursor: "pointer",
-                    fontWeight: "500"
+                    fontWeight: "500",
                   }}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   style={{
                     padding: "10px 20px",
                     borderRadius: "6px",
@@ -562,22 +548,28 @@ const ChronicDiseases = () => {
                     backgroundColor: "#2e99dc",
                     color: "white",
                     cursor: "pointer",
-                    fontWeight: "600"
+                    fontWeight: "600",
                   }}
                 >
                   Add Disease
                 </button>
               </div>
-              
+
               {submitMsg && (
-                <div style={{ 
-                  marginTop: "16px", 
-                  padding: "10px", 
-                  borderRadius: "6px", 
-                  backgroundColor: submitMsg.includes("success") ? "#e6f7e6" : "#ffebeb",
-                  color: submitMsg.includes("success") ? "#2e7d32" : "#d32f2f",
-                  textAlign: "center"
-                }}>
+                <div
+                  style={{
+                    marginTop: "16px",
+                    padding: "10px",
+                    borderRadius: "6px",
+                    backgroundColor: submitMsg.includes("success")
+                      ? "#e6f7e6"
+                      : "#ffebeb",
+                    color: submitMsg.includes("success")
+                      ? "#2e7d32"
+                      : "#d32f2f",
+                    textAlign: "center",
+                  }}
+                >
                   {submitMsg}
                 </div>
               )}
@@ -588,41 +580,60 @@ const ChronicDiseases = () => {
 
       {/* Confirmation Dialog for Deleting Chronic Disease */}
       {deleteConfirmation.show && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            width: "90%",
-            maxWidth: "400px",
-            boxShadow: "0 5px 15px rgba(0,0,0,0.2)"
-          }}>
-            <h3 style={{ marginTop: 0, color: "#e74c3c", borderBottom: "1px solid #eee", paddingBottom: "10px" }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              width: "90%",
+              maxWidth: "400px",
+              boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
+            }}
+          >
+            <h3
+              style={{
+                marginTop: 0,
+                color: "#e74c3c",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+              }}
+            >
               Confirm Deletion
             </h3>
-            
+
             <div style={{ margin: "20px 0", textAlign: "center" }}>
               <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
-                Are you sure you want to delete the chronic disease <strong>"{deleteConfirmation.diseaseName}"</strong>?
+                Are you sure you want to delete the chronic disease{" "}
+                <strong>"{deleteConfirmation.diseaseName}"</strong>?
               </p>
               <p style={{ fontSize: "14px", color: "#666", marginTop: "10px" }}>
                 This action cannot be undone.
               </p>
             </div>
-            
-            <div style={{ display: "flex", justifyContent: "center", gap: "16px", marginTop: "24px" }}>
-              <button 
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "16px",
+                marginTop: "24px",
+              }}
+            >
+              <button
                 onClick={hideDeleteConfirmation}
                 style={{
                   padding: "10px 16px",
@@ -631,12 +642,12 @@ const ChronicDiseases = () => {
                   backgroundColor: "#f5f5f5",
                   cursor: "pointer",
                   fontWeight: "500",
-                  minWidth: "100px"
+                  minWidth: "100px",
                 }}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={confirmDelete}
                 style={{
                   padding: "10px 20px",
@@ -646,7 +657,7 @@ const ChronicDiseases = () => {
                   color: "white",
                   cursor: "pointer",
                   fontWeight: "600",
-                  minWidth: "100px"
+                  minWidth: "100px",
                 }}
               >
                 Delete

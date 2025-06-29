@@ -23,7 +23,7 @@ const DoctorDetails = () => {
 
   useEffect(() => {
     // جلب التخصصات من الـ API
-    fetch("http://motab3aa.runasp.net/api/Specialization")
+    fetch("https://motab3aa.runasp.net/api/Specialization")
       .then((res) => res.json())
       .then((data) => setSpecializations(data))
       .catch(() => setSpecializations([]));

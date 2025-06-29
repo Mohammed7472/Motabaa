@@ -7,6 +7,7 @@ import doctorAvatar from "../images/Doctor 1.png";
 import "./pagesStyles/PatientDetails.css";
 import "./pagesStyles/MedicalHistory.css";
 import "./pagesStyles/CommonStyles.css";
+import api from "../services/api";
 
 const MedicalHistory = () => {
   const location = useLocation();
@@ -37,58 +38,12 @@ const MedicalHistory = () => {
 
   // Fetch prescriptions based on doctor's specialization
   useEffect(() => {
-    // Only proceed if both patientId and specializationId are available
-    // This ensures we don't make the API call with incomplete data
-    if (!patientId || !userData || !userData.specializationId) {
-      console.log("Waiting for complete data before fetching prescriptions:", {
-        patientId,
-        userData: userData ? "Available" : "Not available",
-        specializationId: userData?.specializationId,
-      });
-      return;
-    }
-
+    if (!patientId || !userData || !userData.specializationId) return;
     setLoading(true);
     setError("");
-
-    const fetchPrescriptions = async () => {
-      try {
-        // Ensure we have the latest token from sessionStorage
-        const token = sessionStorage.getItem("authToken");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        // Log the request parameters for debugging
-        console.log("Fetching prescriptions with params:", {
-          specializationId: userData.specializationId,
-          patientId: patientId,
-        });
-
-        const response = await fetch(
-          `http://motab3aa.runasp.net/api/Roshta?Departmentid=${userData.specializationId}&Patientid=${patientId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Log the response status for debugging
-        console.log("API Response status:", response.status);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("API Error response:", errorText);
-          throw new Error(
-            `HTTP error! Status: ${response.status}. Details: ${errorText}`
-          );
-        }
-
-        const data = await response.json();
-        console.log("Prescriptions data:", data);
-
+    api.prescriptions
+      .getByPatientAndSpecialization(patientId, userData.specializationId)
+      .then((data) => {
         // Process the data to ensure each prescription has an ID
         const processedData = Array.isArray(data)
           ? data.map((prescription, index) => {
@@ -98,19 +53,14 @@ const MedicalHistory = () => {
               return prescription;
             })
           : [];
-
         setPrescriptions(processedData);
-      } catch (err) {
-        console.error("Error fetching prescriptions:", err);
+      })
+      .catch((err) => {
         setError(
           `Error fetching prescriptions: ${err.message}. Please try again.`
         );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrescriptions();
+      })
+      .finally(() => setLoading(false));
   }, [patientId, userData]); // Changed dependency to track the entire userData object
 
   // Filter prescriptions based on search term and date filter
@@ -144,10 +94,10 @@ const MedicalHistory = () => {
     const prescriptionWithImageUrls = {
       ...prescription,
       imageUrls: [
-        `http://motab3aa.runasp.net/Images/rosheta/${prescription.roshetaImg}`,
-        `http://motab3aa.runasp.net/Images/${prescription.roshetaImg}`,
-        `http://motab3aa.runasp.net/images/rosheta/${prescription.roshetaImg}`,
-        `http://motab3aa.runasp.net/images/${prescription.roshetaImg}`,
+        `https://motab3aa.runasp.net/Images/rosheta/${prescription.roshetaImg}`,
+        `https://motab3aa.runasp.net/Images/${prescription.roshetaImg}`,
+        `https://motab3aa.runasp.net/images/rosheta/${prescription.roshetaImg}`,
+        `https://motab3aa.runasp.net/images/${prescription.roshetaImg}`,
       ],
     };
     setSelectedPrescription(prescriptionWithImageUrls);
@@ -254,7 +204,7 @@ const MedicalHistory = () => {
                       });
 
                       const response = await fetch(
-                        `http://motab3aa.runasp.net/api/Roshta?Departmentid=${userData.specializationId}&Patientid=${patientId}`,
+                        `https://motab3aa.runasp.net/api/Roshta?Departmentid=${userData.specializationId}&Patientid=${patientId}`,
                         {
                           headers: {
                             Authorization: `Bearer ${token}`,
@@ -409,7 +359,7 @@ const MedicalHistory = () => {
                               }}
                             >
                               <img
-                                src={`http://motab3aa.runasp.net/Images/rosheta/${prescription.roshetaImg}`}
+                                src={`https://motab3aa.runasp.net/Images/rosheta/${prescription.roshetaImg}`}
                                 alt={
                                   prescription.specialization
                                     ? `${prescription.specialization} Prescription`
@@ -431,15 +381,15 @@ const MedicalHistory = () => {
                                     prescription.roshetaImg
                                   );
                                   // Try alternative URL formats if the first one fails
-                                  e.target.src = `http://motab3aa.runasp.net/Images/${prescription.roshetaImg}`;
+                                  e.target.src = `https://motab3aa.runasp.net/Images/${prescription.roshetaImg}`;
 
                                   // If that fails, try another path
                                   e.target.onerror = () => {
-                                    e.target.src = `http://motab3aa.runasp.net/images/rosheta/${prescription.roshetaImg}`;
+                                    e.target.src = `https://motab3aa.runasp.net/images/rosheta/${prescription.roshetaImg}`;
 
                                     // If that fails, try one more path
                                     e.target.onerror = () => {
-                                      e.target.src = `http://motab3aa.runasp.net/images/${prescription.roshetaImg}`;
+                                      e.target.src = `https://motab3aa.runasp.net/images/${prescription.roshetaImg}`;
 
                                       // If all attempts fail, show a placeholder
                                       e.target.onerror = () => {
@@ -596,7 +546,7 @@ const MedicalHistory = () => {
                 }}
               >
                 <img
-                  src={`http://motab3aa.runasp.net/Images/rosheta/${selectedPrescription.roshetaImg}`}
+                  src={`https://motab3aa.runasp.net/Images/rosheta/${selectedPrescription.roshetaImg}`}
                   alt={
                     selectedPrescription.specialization
                       ? `${selectedPrescription.specialization} Prescription`
@@ -616,7 +566,7 @@ const MedicalHistory = () => {
                       "Modal image failed to load:",
                       selectedPrescription.roshetaImg
                     );
-                    e.target.src = `http://motab3aa.runasp.net/Images/${selectedPrescription.roshetaImg}`;
+                    e.target.src = `https://motab3aa.runasp.net/Images/${selectedPrescription.roshetaImg}`;
                     e.target.onerror = () => {
                       e.target.src = `http://motab3aa.runasp.net/images/rosheta/${selectedPrescription.roshetaImg}`;
                       e.target.onerror = () => {

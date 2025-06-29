@@ -1,6 +1,6 @@
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://motab3aa.runasp.net";
-  console.log("🔍 API_BASE_URL:", API_BASE_URL);
+  process.env.REACT_APP_API_URL || "https://motab3aa.runasp.net";
+console.log("🔍 API_BASE_URL:", API_BASE_URL);
 
 const api = {
   /**
@@ -23,8 +23,12 @@ const api = {
       ...options.headers,
     };
 
-    // Get auth token if available
-    const token = localStorage.getItem("authToken");
+    // Get auth token if available (try sessionStorage first, then localStorage)
+    const token =
+      sessionStorage.getItem("authToken") ||
+      sessionStorage.getItem("token") ||
+      localStorage.getItem("authToken") ||
+      localStorage.getItem("token");
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
@@ -37,7 +41,7 @@ const api = {
     try {
       const response = await fetch(url, config);
       const contentType = response.headers.get("content-type") || "";
-      
+
       // First, try to get the response text to avoid losing it if JSON parsing fails
       let responseText = "";
       try {
@@ -46,11 +50,11 @@ const api = {
         console.warn("Could not read response text:", textError);
         responseText = "Unable to read response";
       }
-      
+
       // Attempt to parse as JSON regardless of content type
       let data = null;
       let parseError = null;
-      
+
       if (responseText && responseText.trim()) {
         try {
           data = JSON.parse(responseText);
@@ -59,18 +63,18 @@ const api = {
           // Don't throw here - we'll handle this gracefully below
         }
       }
-      
+
       // Handle successful responses
       if (response.ok) {
         // If we successfully parsed JSON, return it
         if (data !== null) {
           return data;
         }
-        
+
         // If not JSON but response is OK, return the text or an empty object
         return responseText || {};
       }
-      
+
       // Handle error responses
       // Case 1: We have valid JSON error data
       if (data !== null) {
@@ -83,9 +87,9 @@ const api = {
             validationErrors: data.errors || null,
             type: data.type,
             isValidationError: response.status === 400 && data.errors,
-            originalText: responseText
+            originalText: responseText,
           };
-        } 
+        }
         // Handle standard API error responses
         else if (data.message || data.error || data.errors) {
           throw {
@@ -94,7 +98,7 @@ const api = {
             message: data.message || data.error || "API request failed",
             validationErrors: data.errors || null,
             isValidationError: response.status === 400 && data.errors,
-            originalText: responseText
+            originalText: responseText,
           };
         }
         // Any other JSON error format
@@ -103,31 +107,31 @@ const api = {
             status: response.status,
             data,
             message: "API request failed with status " + response.status,
-            originalText: responseText
+            originalText: responseText,
           };
         }
       }
-      
+
       // Case 2: We couldn't parse JSON but have a response
       throw {
         status: response.status,
         message: `Request failed with status ${response.status}`,
         data: responseText,
         contentType,
-        parseError: parseError ? parseError.message : null
+        parseError: parseError ? parseError.message : null,
       };
     } catch (error) {
       // If this is already our formatted error, just rethrow it
       if (error.status) {
         throw error;
       }
-      
+
       // Handle network errors or other exceptions
       console.error("API request failed:", error);
       throw {
         status: 0,
         message: error.message || "Network error or request failed",
-        originalError: error
+        originalError: error,
       };
     }
   },
@@ -153,6 +157,17 @@ const api = {
       }),
   },
 
+  // Search endpoints
+  search: {
+    searchByName: (name) =>
+      api.request(
+        `/api/Account/SearchByName?Name=${encodeURIComponent(name)}`,
+        {
+          method: "GET",
+        }
+      ),
+  },
+
   // Patient endpoints
   patient: {
     getProfile: (patientId) =>
@@ -165,27 +180,39 @@ const api = {
         method: "GET",
       });
     },
-    
+
     getMedicalTests: async (patientId) => {
       return api.request(`/api/MedicalTest?Patientid=${patientId}`, {
         method: "GET",
       });
     },
-    
-  addAllergy: async (data) => {
-  const payload = {
-    patientId: data.patientId,
-    name: data.allergenName || data.name,
-    patientName: data.patientName 
-  };
 
-  console.log('Sending allergy data:', payload);
+    addAllergy: async (data) => {
+      const payload = {
+        patientId: data.patientId,
+        name: data.allergenName || data.name,
+        patientName: data.patientName,
+      };
 
-  return api.request('/api/Allergens', {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
+      console.log("Sending allergy data:", payload);
+
+      return api.request("/api/Allergens", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
+
+    deleteAllergy: async (allergyId, patientId) => {
+      if (!allergyId || !patientId) {
+        throw new Error("Missing allergyId or patientId");
+      }
+      const endpoint = `/api/Allergens?id=${allergyId}&patientId=${encodeURIComponent(
+        patientId
+      )}`;
+      return api.request(endpoint, {
+        method: "DELETE",
+      });
+    },
   },
 
   // Specialization endpoints
@@ -250,6 +277,57 @@ const api = {
           error.message || "Failed to fetch specialization details"
         );
       }
+    },
+  },
+
+  // Chronic Diseases endpoints
+  chronicDiseases: {
+    getAll: async (patientId) => {
+      return api.request(
+        `/api/ChronicDiseases?patientId=${encodeURIComponent(patientId)}`,
+        {
+          method: "GET",
+        }
+      );
+    },
+    add: async (data) => {
+      const payload = {
+        name: data.diseaseName || data.name,
+        patientId: data.patientId,
+        patientName: data.patientName,
+      };
+      return api.request("/api/ChronicDiseases", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    },
+    deleteDisease: async (diseaseId, patientId) => {
+      if (!diseaseId || !patientId) {
+        throw new Error("Missing diseaseId or patientId");
+      }
+      const endpoint = `/api/ChronicDiseases?id=${diseaseId}&patientId=${encodeURIComponent(
+        patientId
+      )}`;
+      return api.request(endpoint, {
+        method: "DELETE",
+      });
+    },
+  },
+
+  // Prescriptions endpoints
+  prescriptions: {
+    getByPatientAndSpecialization: async (patientId, specializationId) => {
+      if (!patientId || !specializationId)
+        throw new Error("Missing patientId or specializationId");
+      // Use the correct endpoint and query params as in the old code
+      return api.request(
+        `/api/Roshta?Departmentid=${encodeURIComponent(
+          specializationId
+        )}&Patientid=${encodeURIComponent(patientId)}`,
+        {
+          method: "GET",
+        }
+      );
     },
   },
 
