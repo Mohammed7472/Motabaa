@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PatientNavbar from "../components/PatientNavbar";
@@ -36,12 +35,22 @@ const PatientDetails = () => {
 
   return (
     <div className="patient-details-container">
-
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <PatientNavbar
-          patientName={isDoctor() ? `Dr. ${userData?.fullName || userData?.userName}` : (userData?.fullName || userData?.userName)}
+          patientName={
+            isDoctor()
+              ? `Dr. ${userData?.fullName || userData?.userName}`
+              : userData?.fullName || userData?.userName
+          }
           patientImage={
-            userData?.profileImage || (isDoctor() ? doctorAvatar : patientAvatar)
+            userData?.profileImage ||
+            (isDoctor() ? doctorAvatar : patientAvatar)
           }
           isDoctor={isDoctor()}
           onLogout={handleLogout}
@@ -151,9 +160,9 @@ const PatientDetails = () => {
           </div>
 
           {/* تظهر الأزرار فقط للطبيب أو إذا كان المستخدم ليس المريض نفسه */}
-          {(isDoctor() || !isPatientViewingSelf) ? (
+          {isDoctor() || !isPatientViewingSelf ? (
             <div className="action-buttons">
-              <button 
+              <button
                 className="action-btn primary"
                 onClick={() =>
                   navigate("/medical-history", {
@@ -186,7 +195,7 @@ const PatientDetails = () => {
                     state: {
                       patientId: patientData.id,
                       patientName: patientData.fullName || patientData.userName,
-                      patientData: patientData
+                      patientData: patientData,
                     },
                   })
                 }

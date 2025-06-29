@@ -87,7 +87,7 @@
 .patient-info-container {
   display: flex;
   justify-content: flex-end;
-  width: 25%;
+  width: 20%;
 }
 
 .patient-info {
@@ -95,8 +95,8 @@
   align-items: center;
   gap: 15px;
   background-color: white;
-  padding: 10px 25px;
-  border-radius: 30px;
+  padding: 5px 20px;
+  border-radius: 18px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 }
 

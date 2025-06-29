@@ -6,14 +6,13 @@ import "./pagesStyles/RadiologyLabs.css";
 
 const RadiologyLabs = () => {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState("patient"); 
+  const [userType, setUserType] = useState("patient");
 
   useEffect(() => {
-    
     const userData = sessionStorage.getItem("registerFormData");
     if (userData) {
       const parsedData = JSON.parse(userData);
-      
+
       setUserType(parsedData.specialty ? "doctor" : "patient");
     }
   }, []);
@@ -38,6 +37,25 @@ const RadiologyLabs = () => {
     <div className="labs-container">
       <DepartmentNavbar />
       <div className="labs-content">
+        <button
+          className="back-btn"
+          style={{
+            margin: "20px 0 0 20px",
+            padding: "8px 18px",
+            borderRadius: "20px",
+            border: "none",
+            background: "#2e99dc",
+            color: "white",
+            fontWeight: 600,
+            fontSize: "15px",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+          onClick={() => navigate(-1)}
+        >
+          <i className="bi bi-arrow-left" style={{ marginRight: 8 }}></i>
+          Back
+        </button>
         <div className="labs-header">
           <h1>RADIOLOGY AND LABORATORY TESTS</h1>
         </div>
