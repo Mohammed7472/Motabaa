@@ -63,7 +63,6 @@ const AddMedicalSession = () => {
 
   const handlePrescriptionUpload = (file) => {
     setPrescriptionImage(file);
-    console.log("Prescription image uploaded:", file.name);
   };
 
   const handleSubmit = async (formData) => {
@@ -88,19 +87,13 @@ const AddMedicalSession = () => {
     // Prepare FormData for file upload
     const formDataToSend = new FormData();
     if (prescriptionImage) {
-      console.log("prescriptionImage to send:", prescriptionImage);
       formDataToSend.append("RoshetalImage", prescriptionImage);
     }
 
     try {
       // Debug: Print all sessionStorage keys and values
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        console.log(`sessionStorage[${key}]:`, sessionStorage.getItem(key));
-      }
       // Get token from sessionStorage (check key name matches login logic)
       const token = sessionStorage.getItem("authToken");
-      console.log("Token sent:", token);
       const response = await fetch(url, {
         method: "POST",
         headers: {

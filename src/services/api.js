@@ -1,6 +1,5 @@
 const API_BASE_URL =
   process.env.REACT_APP_API_URL || "https://motab3aa.runasp.net";
-console.log("🔍 API_BASE_URL:", API_BASE_URL);
 
 const api = {
   /**
@@ -17,13 +16,13 @@ const api = {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
 
-    // Set default headers
+    // ...existing code...
     const headers = {
       "Content-Type": "application/json",
       ...options.headers,
     };
 
-    // Get auth token if available (try sessionStorage first, then localStorage)
+    // ...existing code...
     const token =
       sessionStorage.getItem("authToken") ||
       sessionStorage.getItem("token") ||
@@ -42,16 +41,15 @@ const api = {
       const response = await fetch(url, config);
       const contentType = response.headers.get("content-type") || "";
 
-      // First, try to get the response text to avoid losing it if JSON parsing fails
+      // ...existing code...
       let responseText = "";
       try {
         responseText = await response.clone().text();
       } catch (textError) {
-        console.warn("Could not read response text:", textError);
         responseText = "Unable to read response";
       }
 
-      // Attempt to parse as JSON regardless of content type
+      // ...existing code...
       let data = null;
       let parseError = null;
 
@@ -60,25 +58,25 @@ const api = {
           data = JSON.parse(responseText);
         } catch (err) {
           parseError = err;
-          // Don't throw here - we'll handle this gracefully below
+          // ...existing code...
         }
       }
 
-      // Handle successful responses
+      // ...existing code...
       if (response.ok) {
-        // If we successfully parsed JSON, return it
+        // ...existing code...
         if (data !== null) {
           return data;
         }
 
-        // If not JSON but response is OK, return the text or an empty object
+        // ...existing code...
         return responseText || {};
       }
 
-      // Handle error responses
-      // Case 1: We have valid JSON error data
+      // ...existing code...
+      // ...existing code...
       if (data !== null) {
-        // Handle RFC9110 problem+json format
+        // ...existing code...
         if (data.type && (data.title || data.detail)) {
           throw {
             status: response.status,
@@ -90,7 +88,7 @@ const api = {
             originalText: responseText,
           };
         }
-        // Handle standard API error responses
+        // ...existing code...
         else if (data.message || data.error || data.errors) {
           throw {
             status: response.status,
@@ -101,7 +99,7 @@ const api = {
             originalText: responseText,
           };
         }
-        // Any other JSON error format
+        // ...existing code...
         else {
           throw {
             status: response.status,
@@ -112,7 +110,7 @@ const api = {
         }
       }
 
-      // Case 2: We couldn't parse JSON but have a response
+      // ...existing code...
       throw {
         status: response.status,
         message: `Request failed with status ${response.status}`,
@@ -121,13 +119,13 @@ const api = {
         parseError: parseError ? parseError.message : null,
       };
     } catch (error) {
-      // If this is already our formatted error, just rethrow it
+      // ...existing code...
       if (error.status) {
         throw error;
       }
 
       // Handle network errors or other exceptions
-      console.error("API request failed:", error);
+      // ...existing code...
       throw {
         status: 0,
         message: error.message || "Network error or request failed",
@@ -136,7 +134,7 @@ const api = {
     }
   },
 
-  // Auth endpoints
+  // ...existing code...
   auth: {
     login: (data) =>
       api.request("/api/Account/login", {
@@ -157,7 +155,7 @@ const api = {
       }),
   },
 
-  // Search endpoints
+  // ...existing code...
   search: {
     searchByName: (name) =>
       api.request(
@@ -168,7 +166,7 @@ const api = {
       ),
   },
 
-  // Patient endpoints
+  // ...existing code...
   patient: {
     getProfile: (patientId) =>
       api.request(`/api/Patient/Profile/${patientId}`, {
@@ -223,7 +221,7 @@ const api = {
           method: "GET",
         });
 
-        // Validate the response format
+        // ...existing code...
         if (!Array.isArray(data)) {
           throw new Error("Invalid specialization data format");
         }
@@ -231,13 +229,13 @@ const api = {
         // Map and validate each specialization
         return data
           .map((spec) => {
-            // Ensure we have both an ID and name
+            // ...existing code...
             if (
               !spec ||
               (!spec.id && !spec.specializationId) ||
               (!spec.name && !spec.specializationName)
             ) {
-              console.warn("Invalid specialization entry:", spec);
+              // ...existing code...
               return null;
             }
 
@@ -252,7 +250,7 @@ const api = {
           })
           .filter(Boolean); // Remove null entries
       } catch (error) {
-        console.error("Error fetching specializations:", error);
+        // ...existing code...
         throw new Error(error.message || "Failed to fetch specializations");
       }
     },
@@ -272,7 +270,7 @@ const api = {
           name: data.specializationName || data.name,
         };
       } catch (error) {
-        console.error(`Error fetching specialization ${id}:`, error);
+        // ...existing code...
         throw new Error(
           error.message || "Failed to fetch specialization details"
         );

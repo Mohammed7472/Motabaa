@@ -8,9 +8,7 @@ import { GiMedicines, GiTestTubes } from "react-icons/gi";
 import { FaBuilding } from "react-icons/fa";
 import "./pagesStyles/AddRadiologyLab.css";
 
-
 const CustomSharedForm = ({ inputs, headerIcon, ...props }) => {
-  
   const CustomHeader = () => {
     return (
       <div
@@ -32,7 +30,6 @@ const CustomSharedForm = ({ inputs, headerIcon, ...props }) => {
     );
   };
 
-  
   return (
     <>
       <CustomHeader />
@@ -46,7 +43,6 @@ const AddRadiologyLab = () => {
   const [testImage, setTestImage] = useState(null);
   const [validationAttempted, setValidationAttempted] = useState(false);
 
-  
   const CustomInputs = [
     {
       name: "labName",
@@ -64,16 +60,13 @@ const AddRadiologyLab = () => {
 
   const handleTestPhotoUpload = (file) => {
     setTestImage(file);
-    console.log("Test photo uploaded:", file.name);
   };
 
   const handleSubmit = (formData) => {
-    
     setValidationAttempted(true);
 
-    
     if (!testImage) {
-      return; 
+      return;
     }
 
     const completeData = {
@@ -81,9 +74,6 @@ const AddRadiologyLab = () => {
       testImage: testImage,
     };
 
-    console.log("Lab data:", completeData);
-
-    
     navigate("/lab-report-details", {
       state: {
         lab: { name: formData.labName },
@@ -92,7 +82,6 @@ const AddRadiologyLab = () => {
     });
   };
 
-  
   const CustomInputWithIcons = ({ input, onChange, value }) => (
     <div className="input-group custom-input-group" key={input.name}>
       <span className="icon custom-icon">{input.customIcon}</span>
@@ -122,7 +111,6 @@ const AddRadiologyLab = () => {
       <div className="add-lab-content">
         <div className="add-lab-form-container">
           <div className="card register-card add-lab-form">
-            
             <div
               className="mb-3"
               style={{
@@ -143,7 +131,6 @@ const AddRadiologyLab = () => {
             <h2>Add Radiology or Laboratory</h2>
 
             <form onSubmit={handleFormSubmit}>
-              
               {CustomInputs.map((input) => (
                 <div className="input-group" key={input.name}>
                   <span className="icon">{input.customIcon}</span>

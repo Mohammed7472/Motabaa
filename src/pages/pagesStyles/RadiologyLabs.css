@@ -1,3 +1,22 @@
+/* Back button styles */
+.back-btn {
+  margin: 20px 0 0 20px;
+  padding: 2px 18px;
+  border-radius: 16px;
+  border: none;
+  background: #2e99dc;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: auto;
+  min-width: 70px;
+  max-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Main container styles */
 .labs-container {
   min-height: 100vh;

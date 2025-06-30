@@ -113,7 +113,6 @@ const Dashboard = () => {
 
     try {
       const data = await api.search.searchByName(searchQuery);
-      console.log("Search results:", data);
 
       // Process and filter the data
       const processData = (rawData) => {
@@ -131,13 +130,9 @@ const Dashboard = () => {
 
       const processedResults = processData(data);
       setSearchResults(processedResults);
-      console.log(
-        "Setting processed results:",
-        processedResults.length,
-        "items"
-      );
+      // ...existing code...
     } catch (error) {
-      console.error("Error searching patients:", error);
+      // ...existing code...
       setSearchError(`Failed to search patients: ${error.message}`);
       setSearchResults([]);
     } finally {

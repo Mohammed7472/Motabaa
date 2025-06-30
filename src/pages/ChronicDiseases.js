@@ -38,25 +38,13 @@ const ChronicDiseases = () => {
   useEffect(() => {
     // Enhanced validation for patientId
     if (!patientId) {
-      console.error("Patient ID is missing or invalid:", patientId);
       setError("Patient ID is missing. Please go back and try again.");
-      // Optional: try to go back automatically if no patientId
       setTimeout(() => navigate(-1), 1500);
       return;
     }
 
     setLoading(true);
     setError("");
-
-    // Log the exact patient ID being used
-    console.log("Fetching chronic diseases for patient ID:", patientId);
-    console.log("Patient ID type:", typeof patientId);
-
-    // Use relative URL with the proxy setup
-    const endpoint = `/api/ChronicDiseases?patientId=${encodeURIComponent(
-      patientId
-    )}`;
-    console.log("API endpoint being called:", endpoint);
 
     // Use api service for fetching chronic diseases
     api.chronicDiseases
@@ -101,10 +89,6 @@ const ChronicDiseases = () => {
 
     // Enhanced validation for patient ID
     if (!patientId) {
-      console.error(
-        "Patient ID is missing or invalid during form submission:",
-        patientId
-      );
       setSubmitMsg("Patient ID is missing. Cannot add chronic disease.");
       return;
     }
@@ -115,8 +99,7 @@ const ChronicDiseases = () => {
       patientName: patientName,
     };
 
-    // Log the exact payload being sent
-    console.log("Sending chronic disease data:", JSON.stringify(payload));
+    // ...existing code...
 
     try {
       await api.chronicDiseases.add(payload);
@@ -148,14 +131,12 @@ const ChronicDiseases = () => {
     }
 
     if (!diseaseId) {
-      console.error("Disease ID is missing or invalid:", diseaseId);
       setSubmitMsg("Disease ID is missing. Cannot delete chronic disease.");
       return;
     }
 
     // Check if the ID is a temporary ID (starts with 'temp_')
     if (diseaseId.toString().startsWith("temp_")) {
-      console.error("Cannot delete disease with temporary ID:", diseaseId);
       setSubmitMsg("Disease ID is missing. Cannot delete chronic disease.");
       return;
     }

@@ -4,8 +4,8 @@ export const proxyFetch = async (url, options = {}) => {
     // Try direct fetch first
     return await fetch(url, options);
   } catch (error) {
-    console.log("Direct fetch failed, trying with CORS proxy:", error);
-    
+    // ...existing code...
+
     // If direct fetch fails, try with a CORS proxy
     // Note: This is a public proxy and may have rate limits
     const corsProxyUrl = "https://corsproxy.io/?";

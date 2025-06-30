@@ -55,9 +55,9 @@ function Login() {
         password: formData.password,
       };
 
-      console.log("Login request data:", requestData);
+      // ...existing code...
       const response = await api.auth.login(requestData);
-      console.log("Login API response:", response);
+      // ...existing code...
 
       if (!response || !response.token) {
         throw new Error("Invalid response from server");
@@ -90,11 +90,14 @@ function Login() {
         role: userRole,
         fullName: response.userName, // Use userName as fallback for fullName
         specializationId: response.specializationid,
+        phoneNumber: response.phoneNumber || response.phone || "",
+        age: response.age || "",
+        address: response.address || "",
         // Add any additional fields needed for the UI
       };
 
       sessionStorage.setItem("userData", JSON.stringify(completeUserData));
-      console.log("Stored user data:", completeUserData);
+      // ...existing code...
 
       // Notify other components of the change
       window.dispatchEvent(new Event("storage"));
@@ -103,7 +106,7 @@ function Login() {
       navigate("/dashboard");
       window.location.reload(); // Force reload to hydrate context
     } catch (err) {
-      console.error("Login error:", err);
+      // ...existing code...
       setError(
         err.message ||
           "Login failed. Please check your credentials and try again."
