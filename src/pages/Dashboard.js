@@ -10,6 +10,8 @@ import { DoctorOnly, PatientOnly } from "../components/RoleBasedRender";
 import departmentsIcon from "../images/Mask group (1).png";
 import radiologyIcon from "../images/Mask group.png";
 import sessionsIcon from "../images/medical 1.png";
+import allergiesIcon from "../images/allergies.png";
+import chronicDiseasesIcon from "../images/chronic-diseases.png";
 // import allergyIcon from "../images/allergy-icon.png"; // Removed missing icon
 import chronicIcon from "../images/chronic.png"; // Add a suitable icon to your
 
@@ -183,14 +185,14 @@ const Dashboard = () => {
     {
       id: 4,
       title: "ALLERGIES",
-      icon: radiologyIcon, // Use an existing icon for now
+      icon: allergiesIcon, // Use an existing icon for now
       link: "/allergies",
       className: "allergies",
     },
     {
       id: 5,
       title: "CHRONIC DISEASES",
-      icon: chronicIcon,
+      icon: chronicDiseasesIcon,
       link: "/chronic-diseases",
       className: "chronic-diseases",
     },
@@ -376,6 +378,32 @@ const Dashboard = () => {
                         return;
                       }
                       navigate("/patient-allergies", {
+                        state: {
+                          patientId: userData.id,
+                          patientName: userData.fullName || userData.userName,
+                        },
+                      });
+                    }}
+                  />
+                );
+              }
+              // Special handling for radiology and laboratory tests
+              if (card.title === "RADIOLOGY AND LABORATORY TESTS") {
+                return (
+                  <DashboardCard
+                    key={card.id}
+                    title={card.title}
+                    icon={card.icon}
+                    link={card.link}
+                    className={card.className}
+                    onClick={() => {
+                      if (!userData?.id) {
+                        alert(
+                          "Patient ID is missing. Please log in again or contact support."
+                        );
+                        return;
+                      }
+                      navigate("/radiology-labs", {
                         state: {
                           patientId: userData.id,
                           patientName: userData.fullName || userData.userName,
