@@ -10,7 +10,6 @@ import PatientInformation from "./pages/PatientInformation";
 import HealthDetails from "./pages/HealthDetails";
 import Dashboard from "./pages/Dashboard";
 import Departments from "./pages/Departments";
-import DepartmentDetails from "./pages/DepartmentDetails";
 import MedicalSessions from "./pages/MedicalSessions";
 import AddMedicalSession from "./pages/AddMedicalSession";
 import PrescriptionConfirmation from "./pages/PrescriptionConfirmation";
@@ -26,6 +25,7 @@ import MedicalTests from "./pages/MedicalTests";
 import MedicalHistory from "./pages/MedicalHistory";
 import { UserProvider } from "./context/UserContext";
 import DoctorDetails from "./pages/DoctorDetails";
+import PrescriptionsByDepartment from "./pages/PrescriptionsByDepartment";
 
 function App() {
   return (
@@ -46,10 +46,7 @@ function App() {
             />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/departments" element={<Departments />} />
-            <Route
-              path="/departments/:departmentId"
-              element={<DepartmentDetails />}
-            />
+
             <Route path="/sessions" element={<MedicalSessions />} />
             <Route path="/sessions/add" element={<AddMedicalSession />} />
             <Route path="/radiology-labs" element={<RadiologyLabs />} />
@@ -61,6 +58,10 @@ function App() {
             <Route path="/medical-tests" element={<MedicalTests />} />
             <Route path="/medical-history" element={<MedicalHistory />} />
             <Route path="/doctor-details" element={<DoctorDetails />} />
+            <Route
+              path="/prescriptions-by-department"
+              element={<PrescriptionsByDepartment />}
+            />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

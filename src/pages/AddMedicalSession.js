@@ -15,12 +15,15 @@ const AddMedicalSession = () => {
   const [loadingSpecializations, setLoadingSpecializations] = useState(true);
   const [fetchError, setFetchError] = useState("");
 
+  // لإظهار رسالة النجاح أو الخطأ
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // success | error
+
   useEffect(() => {
     setLoadingSpecializations(true);
     fetch("https://motab3aa.runasp.net/api/Specialization")
       .then((res) => res.json())
       .then((data) => {
-        // Expecting array of specializations with id and name
         setSpecializations(
           Array.isArray(data)
             ? data.map((item) => ({ value: item.id, label: item.name }))
@@ -65,63 +68,82 @@ const AddMedicalSession = () => {
     setPrescriptionImage(file);
   };
 
+  // دالة لتحويل التاريخ لصيغة yyyy-MM-dd
+  const formatDate = (dateStr) => {
+    const dateObj = new Date(dateStr);
+    if (isNaN(dateObj)) return dateStr;
+    const yyyy = dateObj.getFullYear();
+    const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const dd = String(dateObj.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const handleSubmit = async (formData) => {
-    // Extract values
     const specializationId = formData.department;
-    const date = formData.sessionDate;
+    // Format date as MM/dd/yyyy for API
+    const dateObj = new Date(formData.sessionDate);
+    let date = formData.sessionDate;
+    if (!isNaN(dateObj)) {
+      // M/d/yyyy format (no leading zeros)
+      const m = dateObj.getMonth() + 1;
+      const d = dateObj.getDate();
+      const yyyy = dateObj.getFullYear();
+      date = `${m}/${d}/${yyyy}`;
+    }
     const patientId = userData?.id;
 
-    // Build API URL (add RoshetalImg as file name if exists)
-    let roshetalImgValue = "";
-    if (prescriptionImage && prescriptionImage.name) {
-      roshetalImgValue = encodeURIComponent(prescriptionImage.name);
-    }
-    const url = `https://motab3aa.runasp.net/api/Roshta?Date=${encodeURIComponent(
+    let url = `https://motab3aa.runasp.net/api/Roshta?Date=${encodeURIComponent(
       date
     )}&SpecializationId=${encodeURIComponent(
       specializationId
-    )}&PatientId=${encodeURIComponent(
-      patientId
-    )}&RoshetalImg=${roshetalImgValue}`;
+    )}&PatientId=${encodeURIComponent(patientId)}`;
 
-    // Prepare FormData for file upload
-    const formDataToSend = new FormData();
-    if (prescriptionImage) {
+    let fetchOptions = {
+      method: "POST",
+      headers: {},
+    };
+    const token = sessionStorage.getItem("authToken");
+    if (token) fetchOptions.headers["Authorization"] = `Bearer ${token}`;
+
+    if (prescriptionImage && prescriptionImage.name) {
+      // RoshetalImg must match the file name exactly (not encoded)
+      url += `&RoshetalImg=${prescriptionImage.name}`;
+      const formDataToSend = new FormData();
       formDataToSend.append("RoshetalImage", prescriptionImage);
+      fetchOptions.body = formDataToSend;
     }
 
     try {
-      // Debug: Print all sessionStorage keys and values
-      // Get token from sessionStorage (check key name matches login logic)
-      const token = sessionStorage.getItem("authToken");
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          // لا تضع Content-Type هنا، المتصفح سيضبطها تلقائياً مع boundary
-        },
-        body: formDataToSend,
-      });
+      const response = await fetch(url, fetchOptions);
       if (!response.ok) {
-        let errorMsg = "Failed to submit medical session";
+        let errorMsg = "Failed to add prescription";
         try {
           const errorData = await response.json();
           if (errorData && errorData.message) errorMsg = errorData.message;
-        } catch (e) {
-          // ignore json parse error
-        }
+        } catch (e) {}
         if (response.status === 401) {
-          throw new Error("Unauthorized: Please login again");
+          setMessageType("error");
+          setMessage("Unauthorized: Please login again");
+          return;
         }
-        throw new Error(errorMsg);
+        setMessageType("error");
+        setMessage(errorMsg);
+        return;
       }
       const result = await response.json();
-      // Navigate to confirmation page with result
-      navigate("/prescription-confirmation", {
-        state: { ...formData, prescriptionImage, apiResult: result },
-      });
+      setMessageType("success");
+      setMessage("Prescription added successfully!");
+      setTimeout(() => {
+        setMessage("");
+        navigate("/prescription-confirmation", {
+          state: { ...formData, prescriptionImage, apiResult: result },
+        });
+      }, 1200);
     } catch (error) {
-      alert(error.message || "Error submitting medical session");
+      setMessageType("error");
+      setMessage(
+        error.message || "An error occurred while adding the prescription"
+      );
     }
   };
 
@@ -148,6 +170,9 @@ const AddMedicalSession = () => {
           <i className="bi bi-arrow-left" style={{ marginRight: 8 }}></i>
           Back
         </button>
+        {message && (
+          <div className={`session-message ${messageType}`}>{message}</div>
+        )}
         <div className="add-session-form-container">
           <SharedForm
             title="Add Medical Session"

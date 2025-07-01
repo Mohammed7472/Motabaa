@@ -132,8 +132,13 @@ const AddRadiologyLab = () => {
     formDataToSend.append("MedicalTestImage", testImage); // <-- fix field name
 
     try {
-      const token = sessionStorage.getItem("authToken") || sessionStorage.getItem("token") || localStorage.getItem("authToken") || localStorage.getItem("token");
-      const response = await fetch(`https://motab3aa.runasp.net/api/MedicalTest?${params.toString()}`,
+      const token =
+        sessionStorage.getItem("authToken") ||
+        sessionStorage.getItem("token") ||
+        localStorage.getItem("authToken") ||
+        localStorage.getItem("token");
+      const response = await fetch(
+        `https://motab3aa.runasp.net/api/MedicalTest?${params.toString()}`,
         {
           method: "POST",
           headers: {
@@ -293,7 +298,14 @@ const AddRadiologyLab = () => {
                   >
                     <GiTestTubes style={{ color: "#fff", fontSize: 32 }} />
                   </div>
-                  <h3 style={{ color: "#2e99dc", fontWeight: 700, fontSize: 22, marginBottom: 10 }}>
+                  <h3
+                    style={{
+                      color: "#2e99dc",
+                      fontWeight: 700,
+                      fontSize: 22,
+                      marginBottom: 10,
+                    }}
+                  >
                     Test Added Successfully
                   </h3>
                   <div style={{ color: "#333", fontSize: 16, marginBottom: 8 }}>
@@ -328,6 +340,6 @@ const AddRadiologyLab = () => {
       </div>
     </div>
   );
-}
+};
 
 export default AddRadiologyLab;

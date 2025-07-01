@@ -1,0 +1,3 @@
+const prescriptionPlaceholder = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><rect width='220' height='220' fill='%23f8fafd'/><path d='M110,70 L110,150 M70,110 L150,110' stroke='%23e6f3ff' stroke-width='4'/><text x='110' y='180' text-anchor='middle' fill='%23888' font-family='Arial' font-size='14'>No Image Available</text></svg>`;
+
+export default prescriptionPlaceholder;
